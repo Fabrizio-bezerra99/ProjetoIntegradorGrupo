@@ -1,22 +1,38 @@
 import { Injectable } from '@angular/core';
-import { ARTISTAS, AVALIACOES_ARTISTA } from '../data/catalogo.mock';
-import { ArtistaCatalogo, AvaliacaoArtista } from '../../models/catalogo';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+import { Tatuador } from '../../models/tatuador';
+
+@Injectable({
+  providedIn: 'root'
+})
 export class TatuadorService {
-  listar(): readonly ArtistaCatalogo[] {
-    return ARTISTAS;
+
+  private readonly apiUrl = 'http://localhost:8080/tatuadores';
+
+  constructor(private http: HttpClient) {}
+
+  listar(): Observable<Tatuador[]> {
+    return this.http.get<Tatuador[]>(this.apiUrl);
   }
 
-  buscarPorId(id: number): ArtistaCatalogo | undefined {
-    return ARTISTAS.find((artista) => artista.id === id);
+  buscarPorId(id: number): Observable<Tatuador> {
+    return this.http.get<Tatuador>(`${this.apiUrl}/${id}`);
   }
 
-  buscarPorNome(nome: string): ArtistaCatalogo | undefined {
-    return ARTISTAS.find((artista) => artista.nome === nome);
+  cadastrar(tatuador: Tatuador): Observable<Tatuador> {
+    return this.http.post<Tatuador>(this.apiUrl, tatuador);
   }
 
-  listarAvaliacoes(): readonly AvaliacaoArtista[] {
-    return AVALIACOES_ARTISTA;
+  atualizar(id: number, tatuador: Tatuador): Observable<Tatuador> {
+    return this.http.put<Tatuador>(
+      `${this.apiUrl}/${id}`,
+      tatuador
+    );
+  }
+
+  excluir(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
