@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-header-component',
-  imports: [],
   templateUrl: './header-component.html',
   styleUrl: './header-component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  readonly titulo = input.required<string>();
+  readonly descricao = input<string>('');
+  readonly etiqueta = input<string>('');
+}

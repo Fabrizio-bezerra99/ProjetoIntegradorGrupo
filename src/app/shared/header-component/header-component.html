@@ -1,1 +1,9 @@
-<p>header-component works!</p>
+<header class="page-header">
+  @if (etiqueta()) {
+    <p class="eyebrow">{{ etiqueta() }}</p>
+  }
+  <h1>{{ titulo() }}</h1>
+  @if (descricao()) {
+    <p>{{ descricao() }}</p>
+  }
+</header>

@@ -1,13 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LoginComponente } from './pages/login-componente/login-componente';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LoginComponente],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  protected readonly title = signal('codeInk');
-}
+export class App {}

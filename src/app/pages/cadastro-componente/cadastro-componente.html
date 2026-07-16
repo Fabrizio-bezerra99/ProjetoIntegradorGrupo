@@ -1,0 +1,46 @@
+<main class="auth-page">
+  <a class="auth-brand" routerLink="/">CODE INK <span>ESTÚDIO</span></a>
+  <section class="auth-card" aria-labelledby="cadastro-title">
+    <header>
+      <p class="eyebrow">Nova conta</p>
+      <h1 id="cadastro-title">Cadastre-se</h1>
+      <p>Crie sua conta para salvar inspirações e agendar.</p>
+    </header>
+    <form [formGroup]="formulario" (ngSubmit)="cadastrar()" novalidate>
+      <label>Nome completo<input type="text" formControlName="nome" autocomplete="name" /></label>
+      <label>Email<input type="email" formControlName="email" autocomplete="email" /></label>
+      <label
+        >Telefone<input
+          type="tel"
+          formControlName="telefone"
+          autocomplete="tel"
+          placeholder="(21) 99999-9999"
+      /></label>
+      <label
+        >Senha<span class="password-field"
+          ><input
+            [type]="mostrarSenha() ? 'text' : 'password'"
+            formControlName="senha"
+            autocomplete="new-password"
+          /><button type="button" (click)="mostrarSenha.update((v) => !v)">
+            {{ mostrarSenha() ? 'Ocultar' : 'Mostrar' }}
+          </button></span
+        ></label
+      >
+      <label
+        >Confirmar senha<input
+          type="password"
+          formControlName="confirmacaoSenha"
+          autocomplete="new-password"
+      /></label>
+      @if (formulario.hasError('senhasDiferentes') && formulario.get('confirmacaoSenha')?.touched) {
+        <p class="form-error">As senhas precisam ser iguais.</p>
+      }
+      @if (formulario.invalid && formulario.touched) {
+        <p class="form-error">Revise os campos obrigatórios antes de continuar.</p>
+      }
+      <button class="button button--full" type="submit">Cadastrar</button>
+    </form>
+    <p class="auth-footer">Já tem uma conta? <a routerLink="/login">Entrar</a></p>
+  </section>
+</main>

@@ -1,59 +1,29 @@
-# CodeInk
+# Code Ink — Projeto Integrador
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+Projeto Angular 21 refatorado a partir do protótipo visual gerado pelo Figma.
 
-## Development server
+## Principais melhorias
 
-To start a local development server, run:
+- Conversão completa do protótipo React/TSX para Angular standalone.
+- Rotas lazy-loaded e layouts organizados.
+- Componentes reutilizáveis para navegação, rodapé, cabeçalhos, cards de tatuagem e cards de artistas.
+- Formulários reativos com validações.
+- Services tipados preparados para futura integração com API.
+- HTML semântico, responsividade e melhorias de acessibilidade.
+- CSS3 organizado com variáveis globais, utilitários e estilos isolados por componente.
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Executar o projeto
 
 ```bash
-ng generate component component-name
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Acesse `http://localhost:4200`.
 
-```bash
-ng generate --help
-```
+### Credenciais de demonstração
 
-## Building
+- Administrador: `admin@email.com` / `123456`
+- Cliente: `cliente@email.com` / `123456`
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Os dados de portfólio, artistas e agendamentos são mocks locais em `src/app/core/data/catalogo.mock.ts`. Eles podem ser substituídos por chamadas HTTP quando o backend estiver pronto.
