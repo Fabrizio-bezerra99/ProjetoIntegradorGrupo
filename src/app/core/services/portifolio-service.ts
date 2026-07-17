@@ -1,18 +1,41 @@
 import { Injectable } from '@angular/core';
-import { TRABALHOS_PORTFOLIO } from '../data/catalogo.mock';
-import { TrabalhoPortfolio } from '../../models/catalogo';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+import { Portfolio } from '../../models/portifolio';
+
+@Injectable({
+  providedIn: 'root'
+})
 export class PortifolioService {
-  listar(): readonly TrabalhoPortfolio[] {
-    return TRABALHOS_PORTFOLIO;
-  }
 
-  buscarPorId(id: number): TrabalhoPortfolio | undefined {
-    return TRABALHOS_PORTFOLIO.find((trabalho) => trabalho.id === id);
-  }
+  private readonly apiUrl = 'http://localhost:8080/portifolios';
 
-  listarEstilos(): readonly string[] {
-    return ['Todos', ...new Set(TRABALHOS_PORTFOLIO.map((trabalho) => trabalho.estilo))];
+  constructor(private http: HttpClient) {}
+
+  listar(): Observable<Portfolio[]> {
+  return this.http.get<Portfolio[]>(this.apiUrl);
+}
+
+buscarPorId(id: number): Observable<Portfolio> {
+  return this.http.get<Portfolio>(`${this.apiUrl}/${id}`);
+}
+
+cadastrar(portfolio: Portfolio): Observable<Portfolio> {
+  return this.http.post<Portfolio>(this.apiUrl, portfolio);
+}
+
+atualizar(
+  id: number,
+  portfolio: Portfolio
+): Observable<Portfolio> {
+  return this.http.put<Portfolio>(
+    `${this.apiUrl}/${id}`,
+    portfolio
+  );
+}
+
+  excluir(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

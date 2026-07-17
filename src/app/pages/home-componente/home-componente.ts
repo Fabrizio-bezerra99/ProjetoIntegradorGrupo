@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PortifolioService } from '../../core/services/portifolio-service';
+import { CatalogoService } from '../../core/services/catalogo-service';
 import { TattooCardComponent } from '../../shared/tattoo-card-component/tattoo-card-component';
 
 @Component({
@@ -11,9 +11,9 @@ import { TattooCardComponent } from '../../shared/tattoo-card-component/tattoo-c
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponente {
-  private readonly portfolioService = inject(PortifolioService);
+  private readonly catalogoService = inject(CatalogoService);
 
-  protected readonly trabalhosRecentes = this.portfolioService.listar().slice(0, 4);
+  protected readonly trabalhosRecentes = this.catalogoService.listarTrabalhosPortfolio().slice(0, 4);
   protected readonly diferenciais = [
     {
       titulo: 'Tatuadores especializados',

@@ -1,14 +1,38 @@
 import { Injectable } from '@angular/core';
-import { FLASH_TATTOOS } from '../data/catalogo.mock';
-import { FlashTattoo } from '../../models/catalogo';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+import { Tatuagem } from '../../models/tatuagem';
+
+@Injectable({
+  providedIn: 'root'
+})
 export class TatuagemService {
-  listarFlashTattoos(): readonly FlashTattoo[] {
-    return FLASH_TATTOOS;
+
+  private readonly apiUrl = 'http://localhost:8080/tatuagens';
+
+  constructor(private http: HttpClient) {}
+
+  listar(): Observable<Tatuagem[]> {
+    return this.http.get<Tatuagem[]>(this.apiUrl);
   }
 
-  listarTamanhos(): readonly string[] {
-    return ['Todos', 'Pequeno', 'Médio', 'Grande'];
+  buscarPorId(id: number): Observable<Tatuagem> {
+    return this.http.get<Tatuagem>(`${this.apiUrl}/${id}`);
+  }
+
+  cadastrar(tatuagem: Tatuagem): Observable<Tatuagem> {
+    return this.http.post<Tatuagem>(this.apiUrl, tatuagem);
+  }
+
+  atualizar(id: number, tatuagem: Tatuagem): Observable<Tatuagem> {
+    return this.http.put<Tatuagem>(
+      `${this.apiUrl}/${id}`,
+      tatuagem
+    );
+  }
+
+  excluir(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
