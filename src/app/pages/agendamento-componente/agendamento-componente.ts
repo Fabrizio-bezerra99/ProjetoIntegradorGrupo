@@ -26,6 +26,7 @@ export class AgendamentoComponente {
   ] as const;
 
   private readonly catalogoService = inject(CatalogoService);
+  private readonly storageKey = 'codeInk.ultimoAgendamento';
 
   protected readonly artistas = this.catalogoService.listarArtistas();
 
@@ -62,11 +63,24 @@ export class AgendamentoComponente {
   }
 
   protected avancar(): void {
-    if (this.podeAvancar()) this.etapa.update((valor) => Math.min(3, valor + 1));
+    if (!this.podeAvancar()) return;
+
+    if (this.etapa() === 2) {
+      this.salvarAgendamentoDemonstracao();
+    }
+
+    this.etapa.update((valor) => Math.min(3, valor + 1));
   }
 
   protected voltar(): void {
     this.etapa.update((valor) => Math.max(0, valor - 1));
+  }
+
+  private salvarAgendamentoDemonstracao(): void {
+    localStorage.setItem(
+      this.storageKey,
+      JSON.stringify(this.resumoAgendamento()),
+    );
   }
 
   protected novoAgendamento(): void {

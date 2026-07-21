@@ -392,3 +392,113 @@ Sempre que uma mudança importante for feita, lembre de atualizar ou revisar:
 - documentação em docs;
 - mensagens de commit claras;
 - histórico de decisões técnicas.
+
+## Prompts reutilizáveis
+
+Existem instruções específicas dentro da pasta `prompts`.
+
+Quando o usuário pedir:
+
+- revisão do GitHub ou do projeto, leia `prompts/github-review.md`;
+- criação de publicação para LinkedIn, leia `prompts/linkedin-post.md`.
+
+Esses arquivos complementam as regras deste `AGENTS.md`.
+
+Não execute alterações, commits, pushes ou publicações sem autorização explícita.
+
+# Encerramento da Sessão
+
+Antes de considerar qualquer sessão de desenvolvimento concluída, siga obrigatoriamente esta sequência.
+
+## Checklist
+
+### 1. Testes
+
+Confirme comigo se a funcionalidade foi testada.
+
+Caso ainda não tenha sido testada, sugira os testes necessários antes de prosseguir.
+
+---
+
+### 2. Commit
+
+Verifique se o projeto está pronto para um commit.
+
+Caso esteja, sugira uma mensagem de commit seguindo o padrão adotado no projeto.
+
+Não execute o commit automaticamente.
+
+---
+
+### 3. Documentação
+
+Analise se alguma documentação ficou desatualizada devido às alterações realizadas.
+
+Atualize apenas os documentos realmente afetados, como por exemplo:
+
+- LEARNING_LOG.md
+- PROJECT_CONTEXT.md
+- ARCHITECTURE.md
+- ROADMAP.md
+
+Evite reescrever documentos completos quando apenas uma seção precisar ser atualizada.
+
+---
+
+### 4. LinkedIn
+
+Pergunte se desejo gerar um rascunho de publicação para o LinkedIn.
+
+Caso eu aceite:
+
+- utilize apenas informações reais desta sessão;
+- nunca invente experiências ou resultados;
+- gere uma versão em português;
+- gere uma versão em inglês;
+- sugira algumas hashtags.
+
+---
+
+### 5. Próxima Sessão
+
+Antes de finalizar, identifique qual é o próximo passo mais lógico do projeto.
+
+Explique em poucas linhas:
+
+- o objetivo da próxima sessão;
+- quais arquivos provavelmente serão alterados;
+- quais conhecimentos vou praticar.
+
+Atualize o ROADMAP.md apenas se houver mudança nas prioridades do projeto.
+
+---
+
+### 6. Resumo Final
+
+Finalize toda sessão mostrando um resumo com:
+
+✔ O que foi desenvolvido.
+
+✔ O que aprendi.
+
+✔ Quais arquivos foram modificados.
+
+✔ Se existem pendências.
+
+✔ Sugestão da próxima tarefa.
+
+Não considere a sessão encerrada antes de apresentar esse resumo.
+
+### 7. Valor para Portfólio
+
+Ao final da sessão, avalie rapidamente:
+
+Esta alteração tornou o projeto mais interessante para um recrutador?
+
+Responda:
+
+- Sim
+- Parcialmente
+- Ainda não
+
+Explique o motivo em poucas linhas.
