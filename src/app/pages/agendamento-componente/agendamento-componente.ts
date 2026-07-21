@@ -40,6 +40,19 @@ export class AgendamentoComponente {
       (artista) => artista.id === this.artistaId(),
     ),
   );
+  protected readonly resumoAgendamento = computed(() => {
+    const artista = this.artistaSelecionado();
+
+    return {
+      artista: artista?.nome ?? '',
+      data: this.data(),
+      horario: this.horario(),
+      projeto:
+        this.opcao() === 'portfolio'
+          ? 'Inspiração do portfólio'
+          : 'Referência própria',
+    };
+  });
 
   protected podeAvancar(): boolean {
     if (this.etapa() === 0) return this.opcao() !== null;
@@ -55,7 +68,15 @@ export class AgendamentoComponente {
   protected voltar(): void {
     this.etapa.update((valor) => Math.max(0, valor - 1));
   }
-  
+
+  protected novoAgendamento(): void {
+    this.etapa.set(0);
+    this.opcao.set(null);
+    this.artistaId.set(null);
+    this.data.set('');
+    this.horario.set('');
+  }
+
   protected atualizarData(event: Event): void {
     this.data.set((event.target as HTMLInputElement).value);
   }

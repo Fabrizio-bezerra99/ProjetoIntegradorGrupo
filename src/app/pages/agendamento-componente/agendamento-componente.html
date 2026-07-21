@@ -40,7 +40,7 @@
         @case (1) {
           <h2>Escolha o tatuador</h2>
           <div class="artist-options">
-           @for (artista of artistas; track artista.id) {
+            @for (artista of artistas; track artista.id) {
               <button
                 type="button"
                 [class.is-selected]="artistaId() === artista.id"
@@ -85,29 +85,33 @@
             <div class="confirmation__icon">✓</div>
             <h2>Agendamento confirmado!</h2>
             <p>
-              Os dados foram registrados para demonstração. A integração com o backend poderá
-              substituir essa etapa.
+              Seu pedido foi preparado para demonstração. Em uma versão integrada, esses dados
+              seriam enviados para a API do Code Ink.
             </p>
+
             <dl>
               <div>
                 <dt>Artista</dt>
-                <dd>{{ artistaSelecionado()?.nome }}</dd>
+                <dd>{{ resumoAgendamento().artista }}</dd>
               </div>
               <div>
                 <dt>Data</dt>
-                <dd>{{ data() }}</dd>
+                <dd>{{ resumoAgendamento().data }}</dd>
               </div>
               <div>
                 <dt>Horário</dt>
-                <dd>{{ horario() }}</dd>
+                <dd>{{ resumoAgendamento().horario }}</dd>
               </div>
               <div>
                 <dt>Projeto</dt>
-                <dd>
-                  {{ opcao() === 'portfolio' ? 'Inspiração do portfólio' : 'Referência própria' }}
-                </dd>
+                <dd>{{ resumoAgendamento().projeto }}</dd>
               </div>
             </dl>
+
+            <button class="button button--outline" type="button" (click)="novoAgendamento()">
+              Novo agendamento
+            </button>
+
             <a class="button" routerLink="/">Voltar ao início</a>
           </div>
         }
