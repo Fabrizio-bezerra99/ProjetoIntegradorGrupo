@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
-import { TatuadorService } from '../../core/services/tatuador-service';
+import { CatalogoService } from '../../core/services/catalogo-service';
 
 @Component({
   selector: 'app-tatuador-perfil-componente',
@@ -13,13 +13,20 @@ import { TatuadorService } from '../../core/services/tatuador-service';
 })
 export class TatuadorPerfilComponente {
   private readonly route = inject(ActivatedRoute);
-  private readonly service = inject(TatuadorService);
+  private readonly catalogoService = inject(CatalogoService);
+
   private readonly id = toSignal(
     this.route.paramMap.pipe(map((params) => Number(params.get('id')))),
     { initialValue: 1 },
   );
+
   protected readonly artista = computed(
-    () => this.service.buscarPorId(this.id()) ?? this.service.listar()[0],
+    () =>
+      this.catalogoService
+        .listarArtistas()
+        .find((artista) => artista.id === this.id()) ??
+      this.catalogoService.listarArtistas()[0],
   );
-  protected readonly avaliacoes = this.service.listarAvaliacoes();
+
+  protected readonly avaliacoes = this.catalogoService.listarAvaliacoesArtista();
 }

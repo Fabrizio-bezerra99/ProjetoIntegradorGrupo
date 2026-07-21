@@ -11,7 +11,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 
 import { CatalogoService } from '../../core/services/catalogo-service';
-import { TatuadorService } from '../../core/services/tatuador-service';
 
 @Component({
   selector: 'app-tattoo-detail-componente',
@@ -26,17 +25,10 @@ export class TattooDetailComponente {
 
   private readonly catalogoService = inject(CatalogoService);
 
-  private readonly tatuadorService = inject(TatuadorService);
-
   private readonly trabalhos =
     this.catalogoService.listarTrabalhosPortfolio();
-
-  private readonly tatuadores = toSignal(
-    this.tatuadorService.listar(),
-    {
-      initialValue: []
-    }
-  );
+  
+  private readonly artistas = this.catalogoService.listarArtistas();
 
   private readonly id = toSignal(
     this.route.paramMap.pipe(
@@ -57,12 +49,11 @@ export class TattooDetailComponente {
 
   protected readonly artista = computed(() => {
     const trabalhoAtual = this.trabalho();
-    const tatuadoresAtuais = this.tatuadores();
 
     return (
-      tatuadoresAtuais.find(
-        (tatuador) => tatuador.nome === trabalhoAtual.artista
-      ) ?? tatuadoresAtuais[0]
+      this.artistas.find(
+        (artista) => artista.nome === trabalhoAtual.artista
+      ) ?? this.artistas[0]
     );
   });
 

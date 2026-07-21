@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core';
 
 import {
   ARTISTAS,
+  AVALIACOES_ARTISTA,
   FLASH_TATTOOS,
-  TRABALHOS_PORTFOLIO
+  TRABALHOS_PORTFOLIO,
 } from '../data/catalogo.mock';
 
 import {
   ArtistaCatalogo,
+  AvaliacaoArtista,
   FlashTattoo,
-  TrabalhoPortfolio
+  TrabalhoPortfolio,
 } from '../../models/catalogo';
 
 @Injectable({
@@ -34,6 +36,10 @@ export class CatalogoService {
 
   listarTrabalhosPortfolio(): readonly TrabalhoPortfolio[] {
     return TRABALHOS_PORTFOLIO;
+  }
+
+  listarAvaliacoesArtista(): readonly AvaliacaoArtista[] {
+    return AVALIACOES_ARTISTA;
   }
 
   buscarTrabalhoPortfolioPorId(

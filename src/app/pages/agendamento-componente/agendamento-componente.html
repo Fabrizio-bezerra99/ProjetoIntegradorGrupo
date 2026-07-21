@@ -40,7 +40,7 @@
         @case (1) {
           <h2>Escolha o tatuador</h2>
           <div class="artist-options">
-           @for (artista of artistas(); track artista.id) {
+           @for (artista of artistas; track artista.id) {
               <button
                 type="button"
                 [class.is-selected]="artistaId() === artista.id"
