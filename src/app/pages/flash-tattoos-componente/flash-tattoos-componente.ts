@@ -1,7 +1,14 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TatuagemService } from '../../core/services/tatuagem-service';
+
+import { CatalogoService } from '../../core/services/catalogo-service';
 import { HeaderComponent } from '../../shared/header-component/header-component';
 
 @Component({
@@ -12,12 +19,20 @@ import { HeaderComponent } from '../../shared/header-component/header-component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FlashTattoosComponente {
-  private readonly tatuagemService = inject(TatuagemService);
-  protected readonly tamanhos = this.tatuagemService.listarTamanhos();
+  private readonly catalogoService = inject(CatalogoService);
+
+  protected readonly tamanhos =
+    this.catalogoService.listarTamanhos();
+
   protected readonly tamanhoAtivo = signal('Todos');
+
   protected readonly tattoos = computed(() =>
-    this.tatuagemService
+    this.catalogoService
       .listarFlashTattoos()
-      .filter((item) => this.tamanhoAtivo() === 'Todos' || item.tamanho === this.tamanhoAtivo()),
+      .filter(
+        (item) =>
+          this.tamanhoAtivo() === 'Todos' ||
+          item.tamanho === this.tamanhoAtivo()
+      )
   );
 }

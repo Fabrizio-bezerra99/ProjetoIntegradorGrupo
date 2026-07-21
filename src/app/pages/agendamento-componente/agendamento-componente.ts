@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterLink } from '@angular/router';
 import { TatuadorService } from '../../core/services/tatuador-service';
 import { HeaderComponent } from '../../shared/header-component/header-component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type OpcaoAgendamento = 'portfolio' | 'referencia';
 
@@ -24,7 +25,13 @@ export class AgendamentoComponente {
     '16:00',
     '17:00',
   ] as const;
-  protected readonly artistas = inject(TatuadorService).listar();
+  private readonly tatuadorService = inject(TatuadorService);
+  protected readonly artistas = toSignal(
+    this.tatuadorService.listar(),
+    {
+      initialValue: [],
+    },
+  );
   protected readonly etapa = signal(0);
   protected readonly opcao = signal<OpcaoAgendamento | null>(null);
   protected readonly artistaId = signal<number | null>(null);
@@ -32,8 +39,10 @@ export class AgendamentoComponente {
   protected readonly horario = signal('');
   protected readonly dataMinima = new Date().toISOString().slice(0, 10);
   protected readonly artistaSelecionado = computed(() =>
-    this.artistas.find((artista) => artista.id === this.artistaId()),
-  );
+  this.artistas().find(
+    (artista) => artista.id === this.artistaId(),
+  ),
+);
 
   protected podeAvancar(): boolean {
     if (this.etapa() === 0) return this.opcao() !== null;

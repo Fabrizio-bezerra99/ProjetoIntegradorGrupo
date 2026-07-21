@@ -1,5 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TatuadorService } from '../../core/services/tatuador-service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject
+} from '@angular/core';
+import { CatalogoService } from '../../core/services/catalogo-service';
 import { ArtistCardComponent } from '../../shared/artist-card-component/artist-card-component';
 import { HeaderComponent } from '../../shared/header-component/header-component';
 
@@ -11,5 +15,8 @@ import { HeaderComponent } from '../../shared/header-component/header-component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TatuadoresComponente {
-  protected readonly artistas = inject(TatuadorService).listar();
+  private readonly catalogoService = inject(CatalogoService);
+
+  protected readonly artistas = this.catalogoService.listarArtistas();
+    
 }

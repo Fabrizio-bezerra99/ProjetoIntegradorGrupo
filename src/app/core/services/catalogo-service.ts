@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import {
+  ARTISTAS,
   FLASH_TATTOOS,
   TRABALHOS_PORTFOLIO
 } from '../data/catalogo.mock';
 
 import {
+  ArtistaCatalogo,
   FlashTattoo,
   TrabalhoPortfolio
 } from '../../models/catalogo';
@@ -16,6 +18,10 @@ import {
 export class CatalogoService {
   listar() {
     throw new Error('Method not implemented.');
+  }
+
+  listarArtistas(): readonly ArtistaCatalogo[] {
+    return ARTISTAS;
   }
 
   listarFlashTattoos(): readonly FlashTattoo[] {
