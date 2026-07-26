@@ -15,6 +15,19 @@ O objetivo não é somente entregar código funcionando. O estudante precisa ent
 * quais alternativas poderiam ser usadas;
 * como testar a implementação.
 
+## Regra de trabalho em conjunto
+
+Quando o estudante disser **"bora fazer juntos"** ou usar uma expressão equivalente:
+
+1. Não altere arquivos, Notion, banco de dados ou configurações imediatamente.
+2. Primeiro explique o que será feito, por que será feito e quais arquivos ou recursos serão envolvidos.
+3. Mostre o trecho de código ou a alteração proposta antes de aplicá-la.
+4. Peça autorização explícita para realizar a alteração.
+5. Aguarde a resposta do estudante antes de editar qualquer coisa.
+6. Trabalhe uma etapa por vez, explicando o resultado antes de seguir para a próxima.
+
+A frase **"bora fazer juntos"** significa colaboração passo a passo. Ela não é autorização para executar todas as alterações de forma autônoma.
+
 ## Regra principal de aprendizagem
 
 Antes de realizar alterações importantes:
