@@ -12,12 +12,15 @@ import { CatalogoService } from '../../core/services/catalogo-service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientePerfilComponente {
-  protected readonly authService = inject(AuthService);
-  protected readonly agendamentos = inject(AgendamentoService).listarResumos().slice(0, 3);
-  protected readonly favoritos = inject(CatalogoService)
-  .listarTrabalhosPortfolio()
-  .slice(0, 5);
   private readonly router = inject(Router);
+  private readonly agendamentoService = inject(AgendamentoService);
+
+  protected readonly authService = inject(AuthService);
+  protected readonly agendamentos = this.agendamentoService
+    .listarResumos()
+    .filter((item) => item.cliente === this.authService.usuarioAtual()?.nome);
+  protected readonly favoritos = inject(CatalogoService).listarTrabalhosPortfolio().slice(0, 5);
+  protected readonly totalAgendamentos = this.agendamentos.length;
 
   protected sair(): void {
     this.authService.logout();

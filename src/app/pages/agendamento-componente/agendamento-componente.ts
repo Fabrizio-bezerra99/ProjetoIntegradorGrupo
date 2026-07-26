@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '../../shared/header-component/header-component';
+import { AgendamentoService } from '../../core/services/agendamento-service';
+import { AuthService } from '../../core/services/auth-service';
 import { CatalogoService } from '../../core/services/catalogo-service';
+import type { UltimoAgendamentoResumo } from '../../models/catalogo';
 
 type OpcaoAgendamento = 'portfolio' | 'referencia';
 
@@ -26,7 +29,9 @@ export class AgendamentoComponente {
   ] as const;
 
   private readonly catalogoService = inject(CatalogoService);
-  private readonly storageKey = 'codeInk.ultimoAgendamento';
+  private readonly agendamentoService = inject(AgendamentoService);
+  private readonly authService = inject(AuthService);
+  private agendamentoSalvo = false;
 
   protected readonly artistas = this.catalogoService.listarArtistas();
 
@@ -37,21 +42,16 @@ export class AgendamentoComponente {
   protected readonly horario = signal('');
   protected readonly dataMinima = new Date().toISOString().slice(0, 10);
   protected readonly artistaSelecionado = computed(() =>
-    this.artistas.find(
-      (artista) => artista.id === this.artistaId(),
-    ),
+    this.artistas.find((artista) => artista.id === this.artistaId()),
   );
-  protected readonly resumoAgendamento = computed(() => {
+  protected readonly resumoAgendamento = computed<UltimoAgendamentoResumo>(() => {
     const artista = this.artistaSelecionado();
 
     return {
       artista: artista?.nome ?? '',
       data: this.data(),
       horario: this.horario(),
-      projeto:
-        this.opcao() === 'portfolio'
-          ? 'Inspiração do portfólio'
-          : 'Referência própria',
+      projeto: this.opcao() === 'portfolio' ? 'Inspiração do portfólio' : 'Referência própria',
     };
   });
 
@@ -65,8 +65,8 @@ export class AgendamentoComponente {
   protected avancar(): void {
     if (!this.podeAvancar()) return;
 
-    if (this.etapa() === 2) {
-      this.salvarAgendamentoDemonstracao();
+    if (this.etapa() === 2 && !this.agendamentoSalvo) {
+      this.salvarAgendamento();
     }
 
     this.etapa.update((valor) => Math.min(3, valor + 1));
@@ -76,11 +76,12 @@ export class AgendamentoComponente {
     this.etapa.update((valor) => Math.max(0, valor - 1));
   }
 
-  private salvarAgendamentoDemonstracao(): void {
-    localStorage.setItem(
-      this.storageKey,
-      JSON.stringify(this.resumoAgendamento()),
+  private salvarAgendamento(): void {
+    this.agendamentoService.cadastrarResumo(
+      this.authService.usuarioAtual()?.nome ?? 'Cliente',
+      this.resumoAgendamento(),
     );
+    this.agendamentoSalvo = true;
   }
 
   protected novoAgendamento(): void {
@@ -89,6 +90,7 @@ export class AgendamentoComponente {
     this.artistaId.set(null);
     this.data.set('');
     this.horario.set('');
+    this.agendamentoSalvo = false;
   }
 
   protected atualizarData(event: Event): void {

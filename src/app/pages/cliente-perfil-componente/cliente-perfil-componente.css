@@ -130,10 +130,18 @@
   border: 1px solid var(--border);
   background: var(--surface-base);
 }
+.appointment-list__latest {
+  border-color: var(--border-strong);
+  background: var(--surface-soft);
+}
 .appointment-list article div {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+}
+.appointment-list small {
+  color: var(--text-muted);
+  font-size: 0.62rem;
 }
 .appointment-list strong {
   font-size: 0.76rem;

@@ -99,6 +99,17 @@ export const routes: Routes = [
             (m) => m.DashboardComponente,
           ),
       },
+
+      {
+        path: 'dashboard/agendamentos',
+        title: 'Gerenciar agendamentos | Code Ink',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import(
+            './pages/agendamentos-admin-componente/agendamentos-admin-componente'
+          ).then((m) => m.AgendamentosAdminComponente),
+      },
+
       {
         path: '**',
         title: 'Página não encontrada | Code Ink',

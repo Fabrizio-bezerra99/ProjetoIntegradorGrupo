@@ -12,9 +12,29 @@ import { AuthService } from '../../core/services/auth-service';
 })
 export class DashboardComponente {
   protected readonly agendamentos = inject(AgendamentoService).listarResumos();
+  private readonly totalPendentes = this.agendamentos.filter(
+    (item) => item.status === 'Pendente',
+  ).length;
+
+  private readonly totalConfirmados = this.agendamentos.filter(
+    (item) => item.status === 'Confirmado',
+  ).length;
+
+  private readonly totalClientes = new Set(
+    this.agendamentos.map((item) => item.cliente),
+  ).size;
+
   protected readonly indicadores = [
-    { rotulo: 'Agendamentos', valor: '24', detalhe: '+3 esta semana' },
-    { rotulo: 'Clientes', valor: '52', detalhe: '+8 este mês' },
+    {
+      rotulo: 'Agendamentos',
+      valor: String(this.agendamentos.length),
+      detalhe: `${this.totalConfirmados} confirmados, ${this.totalPendentes} pendentes`,
+    },
+    {
+      rotulo: 'Clientes',
+      valor: String(this.totalClientes),
+      detalhe: 'clientes com agendamento',
+    },
     { rotulo: 'Tatuagens', valor: '18', detalhe: 'este mês' },
     { rotulo: 'Avaliações', valor: '35', detalhe: '4,8 de média' },
   ] as const;

@@ -7,7 +7,8 @@
         <p>Cliente</p>
       </div>
       <nav class="profile-nav card" aria-label="Área do cliente">
-        <a routerLink="/agendamento">Agendamentos <span>3</span></a
+        <a routerLink="/agendamento"
+          >Agendamentos <span>{{ totalAgendamentos }}</span></a
         ><button type="button">Favoritos</button><button type="button">Inspirações</button
         ><button type="button">Configurações</button
         ><button type="button" (click)="sair()">Sair</button>
@@ -15,7 +16,10 @@
     </aside>
     <main>
       <div class="stats-grid">
-        <article class="card"><strong>3</strong><span>Agendamentos</span></article>
+        <article class="card">
+          <strong>{{ totalAgendamentos }}</strong
+          ><span>Agendamentos</span>
+        </article>
         <article class="card"><strong>5</strong><span>Inspirações salvas</span></article>
         <article class="card"><strong>2</strong><span>Avaliações</span></article>
       </div>
@@ -53,7 +57,10 @@
             <article>
               <div>
                 <strong>{{ item.artista }}</strong
-                ><span>{{ item.data }} · {{ item.horario }}</span>
+                ><span
+                  >{{ item.data }} · {{ item.horario
+                  }}{{ item.projeto ? ' · ' + item.projeto : '' }}</span
+                >
               </div>
               <span
                 class="status"
@@ -62,6 +69,8 @@
                 >{{ item.status }}</span
               >
             </article>
+          } @empty {
+            <p>Nenhum agendamento encontrado.</p>
           }
         </div>
       </section>
