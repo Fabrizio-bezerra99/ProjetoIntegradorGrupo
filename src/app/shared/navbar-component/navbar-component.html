@@ -49,7 +49,16 @@
             link.rotulo
           }}</a>
         }
-        <a routerLink="/login" (click)="fecharMenu()">Entrar</a>
+        @if (authService.estaAutenticado()) {
+          <a
+            [routerLink]="authService.usuarioAtual()?.perfil === 'admin' ? '/dashboard' : '/perfil'"
+            (click)="fecharMenu()"
+          >
+            Minha conta
+          </a>
+        } @else {
+          <a routerLink="/login" (click)="fecharMenu()"> Entrar </a>
+        }
       </div>
     </div>
   }
