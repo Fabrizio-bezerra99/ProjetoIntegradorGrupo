@@ -22,7 +22,12 @@
             [type]="mostrarSenha() ? 'text' : 'password'"
             formControlName="senha"
             autocomplete="new-password"
-          /><button type="button" (click)="mostrarSenha.update((v) => !v)">
+          /><button
+            type="button"
+            (click)="mostrarSenha.update((v) => !v)"
+            [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'"
+            [attr.aria-pressed]="mostrarSenha()"
+          >
             {{ mostrarSenha() ? 'Ocultar' : 'Mostrar' }}
           </button></span
         ></label

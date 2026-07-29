@@ -18,6 +18,7 @@
             type="button"
             (click)="mostrarSenha.update((v) => !v)"
             [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'"
+            [attr.aria-pressed]="mostrarSenha()"
           >
             {{ mostrarSenha() ? 'Ocultar' : 'Mostrar' }}
           </button></span
