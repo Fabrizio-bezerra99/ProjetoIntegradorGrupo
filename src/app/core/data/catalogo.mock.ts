@@ -98,8 +98,7 @@ export const TRABALHOS_PORTFOLIO: readonly TrabalhoPortfolio[] = [
     titulo: 'Leão Realista',
     artista: 'Lucas Oliveira',
     estilo: 'Realismo',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1522687533888-1078974f88ec?auto=format&fit=crop&w=900&q=85',
+    imagemUrl: '/images/portfolio/portfolio-realismo.png',
     descricao:
       'Composição realista em preto e cinza, construída com contraste, textura e sombreamento progressivo.',
     duracao: '6 horas',
@@ -111,8 +110,7 @@ export const TRABALHOS_PORTFOLIO: readonly TrabalhoPortfolio[] = [
     titulo: 'Rosa Fine Line',
     artista: 'Mariana Costa',
     estilo: 'Fine Line',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1610942933193-8fafd0973f6d?auto=format&fit=crop&w=900&q=85',
+    imagemUrl: '/images/portfolio/portfolio-fine-line.png',
     descricao: 'Rosa delicada feita com linhas finas, detalhes leves e composição minimalista.',
     duracao: '3 horas',
     sessoes: 1,
@@ -123,8 +121,7 @@ export const TRABALHOS_PORTFOLIO: readonly TrabalhoPortfolio[] = [
     titulo: 'Olho Geométrico',
     artista: 'Rafael Santos',
     estilo: 'Blackwork',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1714787283989-0c9595dcbf90?auto=format&fit=crop&w=900&q=85',
+    imagemUrl: '/images/portfolio/portfolio-blackwork.png',
     descricao:
       'Desenho geométrico de alto contraste, com preenchimentos sólidos e linhas simétricas.',
     duracao: '5 horas',
@@ -133,11 +130,10 @@ export const TRABALHOS_PORTFOLIO: readonly TrabalhoPortfolio[] = [
   },
   {
     id: 4,
-    titulo: 'Cobra Oriental',
+    titulo: 'Carpa Koi Oriental',
     artista: 'Juliana Lima',
     estilo: 'Oriental',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1645384816403-bf9913531c0d?auto=format&fit=crop&w=900&q=85',
+    imagemUrl: '/images/portfolio/portfolio-oriental.png',
     descricao: 'Cobra de inspiração oriental, com movimento orgânico e acabamento detalhado.',
     duracao: '8 horas',
     sessoes: 2,
