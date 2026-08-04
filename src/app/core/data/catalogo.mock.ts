@@ -141,52 +141,51 @@ export const TRABALHOS_PORTFOLIO: readonly TrabalhoPortfolio[] = [
   },
   {
     id: 5,
-    titulo: 'Caveira Blackwork',
+    titulo: 'Máscara Oni Blackwork',
     artista: 'Lucas Oliveira',
     estilo: 'Blackwork',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1714787283995-7817fef1becf?auto=format&fit=crop&w=900&q=85',
-    descricao: 'Caveira em blackwork com áreas de preto sólido e textura dramática.',
+    imagemUrl: '/images/portfolio/portfolio-mascara-oni-blackwork.png',
+    descricao:
+      'Máscara de inspiração japonesa criada com preto sólido, simetria e detalhes ornamentais.',
     duracao: '7 horas',
     sessoes: 1,
-    local: 'Braço',
+    local: 'Antebraço',
   },
   {
     id: 6,
-    titulo: 'Retrato Realista',
+    titulo: 'Leão da Savana Realista',
     artista: 'Mariana Costa',
     estilo: 'Realismo',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1729009223965-daa0791bb6e0?auto=format&fit=crop&w=900&q=85',
-    descricao: 'Retrato em preto e cinza, com atenção especial às expressões e à profundidade.',
+    imagemUrl: '/images/portfolio/portfolio-leao-savana-realismo.png',
+    descricao:
+      'Leão realista em preto e cinza, acompanhado por uma paisagem de savana e sombreamento detalhado.',
     duracao: '9 horas',
     sessoes: 2,
-    local: 'Costela',
+    local: 'Antebraço',
   },
   {
     id: 7,
-    titulo: 'Escorpião Old School',
+    titulo: 'Adaga e Rosa Old School',
     artista: 'Rafael Santos',
     estilo: 'Old School',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1775135709464-3eaedc1420be?auto=format&fit=crop&w=900&q=85',
-    descricao: 'Flash tradicional com contornos marcantes, leitura clara e composição clássica.',
+    imagemUrl: '/images/portfolio/portfolio-adaga-rosa-old-school.png',
+    descricao:
+      'Composição tradicional com adaga, rosa, coração e andorinha, usando contornos marcantes e cores sólidas.',
     duracao: '4 horas',
     sessoes: 1,
-    local: 'Ombro',
+    local: 'Antebraço',
   },
   {
     id: 8,
-    titulo: 'Flor Aquarela',
+    titulo: 'Beija-flor Aquarela',
     artista: 'Juliana Lima',
     estilo: 'Aquarela',
-    imagemUrl:
-      'https://images.unsplash.com/photo-1775135613777-83bf49eb3f3c?auto=format&fit=crop&w=900&q=85',
+    imagemUrl: '/images/portfolio/portfolio-beija-flor-aquarela.png',
     descricao:
-      'Flor com transições suaves, respingos e sobreposição de cores inspirada em aquarela.',
+      'Beija-flor com flores, respingos e transições vibrantes inspiradas na técnica de aquarela.',
     duracao: '5 horas',
     sessoes: 1,
-    local: 'Costas',
+    local: 'Antebraço',
   },
 ];
 
