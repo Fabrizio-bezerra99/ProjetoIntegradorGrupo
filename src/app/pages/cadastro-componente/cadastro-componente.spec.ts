@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { vi } from 'vitest';
 import { CadastroComponente } from './cadastro-componente';
 
 describe('CadastroComponente', () => {
@@ -38,5 +39,75 @@ describe('CadastroComponente', () => {
     expect(campoSenha.type).toBe('text');
     expect(botaoSenha.getAttribute('aria-label')).toBe('Ocultar senha');
     expect(botaoSenha.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('deve alternar a visibilidade da confirmação de senha e seus atributos acessíveis', () => {
+    const fixture = TestBed.createComponent(CadastroComponente);
+    fixture.detectChanges();
+
+    const campoConfirmacao = fixture.nativeElement.querySelector(
+      'input[formControlName="confirmacaoSenha"]',
+    ) as HTMLInputElement;
+
+    const botoesSenha = fixture.nativeElement.querySelectorAll(
+      '.password-field button',
+    ) as NodeListOf<HTMLButtonElement>;
+    const botaoConfirmacao = botoesSenha[1];
+
+    expect(campoConfirmacao.type).toBe('password');
+    expect(botaoConfirmacao.getAttribute('aria-label')).toBe('Mostrar confirmação de senha');
+    expect(botaoConfirmacao.getAttribute('aria-pressed')).toBe('false');
+
+    botaoConfirmacao.click();
+    fixture.detectChanges();
+
+    expect(campoConfirmacao.type).toBe('text');
+    expect(botaoConfirmacao.getAttribute('aria-label')).toBe('Ocultar confirmação de senha');
+    expect(botaoConfirmacao.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('deve sincronizar valores preenchidos pelo navegador antes de validar o cadastro', () => {
+    const fixture = TestBed.createComponent(CadastroComponente);
+    fixture.detectChanges();
+
+    const router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    const campoNome = fixture.nativeElement.querySelector(
+      'input[formControlName="nome"]',
+    ) as HTMLInputElement;
+    campoNome.value = 'Ana Lima';
+
+    const campoEmail = fixture.nativeElement.querySelector(
+      'input[formControlName="email"]',
+    ) as HTMLInputElement;
+
+    campoEmail.value = 'ana.lima@email.com';
+
+    const campoTelefone = fixture.nativeElement.querySelector(
+      'input[formControlName="telefone"]',
+    ) as HTMLInputElement;
+
+    campoTelefone.value = '(21) 99999-9999';
+
+    const campoSenha = fixture.nativeElement.querySelector(
+      'input[formControlName="senha"]',
+    ) as HTMLInputElement;
+
+    campoSenha.value = 'senha123';
+
+    const campoConfirmacaoSenha = fixture.nativeElement.querySelector(
+      'input[formControlName="confirmacaoSenha"]',
+    ) as HTMLInputElement;
+
+    campoConfirmacaoSenha.value = 'senha123';
+
+    const botaoCadastrar = fixture.nativeElement.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+
+    botaoCadastrar.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.form-error')).toBeNull();
   });
 });

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -27,6 +34,9 @@ export class CadastroComponente {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   protected readonly mostrarSenha = signal(false);
+  protected readonly mostrarConfirmacaoSenha = signal(false);
+  private readonly formularioNativo =
+    viewChild.required<ElementRef<HTMLFormElement>>('formularioNativo');
 
   protected readonly formulario = this.fb.nonNullable.group(
     {
@@ -39,7 +49,24 @@ export class CadastroComponente {
     { validators: senhasIguais },
   );
 
+  private lerValorDoCampo(nome: string): string {
+    const campo = this.formularioNativo().nativeElement.elements.namedItem(nome);
+
+    return campo instanceof HTMLInputElement ? campo.value : '';
+  }
+
+  private sincronizarValoresDoNavegador(): void {
+    this.formulario.patchValue({
+      nome: this.lerValorDoCampo('nome'),
+      email: this.lerValorDoCampo('email'),
+      telefone: this.lerValorDoCampo('telefone'),
+      senha: this.lerValorDoCampo('senha'),
+      confirmacaoSenha: this.lerValorDoCampo('confirmacaoSenha'),
+    });
+  }
+
   protected cadastrar(): void {
+    this.sincronizarValoresDoNavegador();
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;

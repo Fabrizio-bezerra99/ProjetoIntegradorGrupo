@@ -1,897 +1,375 @@
-# Analise da Codebase - Code Ink
+# Auditoria da codebase e da documentação — Code Ink
 
-Data da analise: 17/07/2026
+Data da auditoria: 29/07/2026
 
-## Tipo de tarefa
+## Objetivo e método
 
-Analise e documentacao.
+Esta auditoria compara a documentação com o estado atual do repositório. Foram inspecionados arquivos de configuração, código TypeScript, templates HTML, estilos CSS, models, services, guards, mocks, testes, assets e histórico Git recente.
 
-Esta analise foi feita em modo somente leitura sobre a aplicacao. O unico arquivo criado nesta etapa foi este relatorio em `docs/CODEBASE_ANALYSIS.md`.
+Nenhum arquivo de código-fonte foi alterado. As únicas mudanças produzidas pela auditoria estão nos documentos do projeto.
 
-## Objetivo
+Validações executadas:
 
-Mapear o estado atual do projeto Code Ink, identificar a estrutura real da aplicacao Angular, separar funcionalidades implementadas de funcionalidades simuladas e registrar problemas encontrados antes de novas implementacoes.
-
-## Estrutura geral encontrada
-
-Raiz analisada:
-
-```text
-C:\Users\fabri\OneDrive\Documentos\pi\CODEINK\ProjetoIntegrador
-```
-
-Itens principais:
-
-```text
-AGENTS.md
-README.md
-REFATORACAO.md
-angular.json
-package.json
-package-lock.json
-tsconfig.json
-tsconfig.app.json
-tsconfig.spec.json
-docs/
-public/
-src/
-```
-
-Organizacao principal dentro de `src/app`:
-
-```text
-src/app/
-  app.config.ts
-  app.routes.ts
-  app.ts
-  app.html
-  app.css
-  core/
-    data/
-    guards/
-    services/
-  interceptors/
-  models/
-  pages/
-  shared/
-```
-
-## Tecnologias e versoes
-
-O projeto e uma aplicacao Angular standalone.
-
-Versoes encontradas em `package.json`:
-
-| Tecnologia | Versao |
-|---|---:|
-| Angular common/compiler/core/forms/platform-browser/router | `^21.2.0` |
-| Angular CLI | `^21.2.8` |
-| Angular build | `^21.2.8` |
-| TypeScript | `~5.9.2` |
-| RxJS | `~7.8.0` |
-| Vitest | `^4.0.8` |
-| jsdom | `^28.0.0` |
-| Prettier | `^3.8.1` |
-
-O projeto usa:
-
-- `bootstrapApplication` em `src/main.ts`;
-- `ApplicationConfig` em `src/app/app.config.ts`;
-- `provideRouter(routes)`;
-- componentes standalone;
-- rotas com `loadComponent`;
-- signals do Angular em algumas telas e services.
-
-## Componentes encontrados
-
-### Componente raiz
-
-- `App`
-  - Arquivos:
-    - `src/app/app.ts`
-    - `src/app/app.html`
-    - `src/app/app.css`
-  - Responsabilidade: renderizar o `router-outlet` principal.
-
-### Layout compartilhado
-
-- `SiteLayoutComponent`
-  - Pasta: `src/app/shared/site-layout-component`
-  - Responsabilidade: envolver paginas publicas com navbar, conteudo principal e footer.
-
-### Componentes compartilhados
-
-- `NavbarComponent`
-  - Pasta: `src/app/shared/navbar-component`
-  - Responsabilidade: menu principal, links de navegacao e atalho para login/minha conta.
-
-- `FooterComponent`
-  - Pasta: `src/app/shared/footer-component`
-  - Responsabilidade: rodape do site.
-
-- `HeaderComponent`
-  - Pasta: `src/app/shared/header-component`
-  - Responsabilidade: cabecalho reutilizavel de secoes.
-
-- `TattooCardComponent`
-  - Pasta: `src/app/shared/tattoo-card-component`
-  - Responsabilidade: card de trabalho do portfolio.
-  - Usa o model `TrabalhoPortfolio`.
-
-- `ArtistCardComponent`
-  - Pasta: `src/app/shared/artist-card-component`
-  - Responsabilidade: card de artista/tatuador.
-  - Usa o model `ArtistaCatalogo`.
-
-### Paginas
-
-- `HomeComponente`
-  - Pasta: `src/app/pages/home-componente`
-  - Mostra hero, diferenciais e trabalhos recentes do portfolio.
-
-- `LoginComponente`
-  - Pasta: `src/app/pages/login-componente`
-  - Formulario reativo para login simulado.
-
-- `CadastroComponente`
-  - Pasta: `src/app/pages/cadastro-componente`
-  - Formulario reativo para cadastro simulado de cliente.
-
-- `PortfolioComponente`
-  - Pasta: `src/app/pages/portfolio-componente`
-  - Lista trabalhos do portfolio com filtro por estilo e busca.
-
-- `TattooDetailComponente`
-  - Pasta: `src/app/pages/tattoo-detail-componente`
-  - Mostra detalhes de um trabalho do portfolio.
-
-- `FlashTattoosComponente`
-  - Pasta: `src/app/pages/flash-tattoos-componente`
-  - Lista flash tattoos com filtro por tamanho.
-
-- `TatuadoresComponente`
-  - Pasta: `src/app/pages/tatuadores-componente`
-  - Lista tatuadores/artistas.
-
-- `TatuadorPerfilComponente`
-  - Pasta: `src/app/pages/tatuador-perfil-componente`
-  - Mostra perfil de tatuador, trabalhos e avaliacoes.
-
-- `AgendamentoComponente`
-  - Pasta: `src/app/pages/agendamento-componente`
-  - Fluxo em etapas para agendamento demonstrativo.
-
-- `ClientePerfilComponente`
-  - Pasta: `src/app/pages/cliente-perfil-componente`
-  - Area do cliente autenticado.
-
-- `DashboardComponente`
-  - Pasta: `src/app/pages/dashboard-componente`
-  - Area administrativa com indicadores e agendamentos recentes.
-
-- `ContatoComponente`
-  - Pasta: `src/app/pages/contato-componente`
-  - Formulario reativo de contato sem envio real.
-
-- `NotFoundComponente`
-  - Pasta: `src/app/pages/not-found-componente`
-  - Pagina 404.
-
-## Services encontrados
-
-### `AuthService`
-
-Arquivo:
-
-```text
-src/app/core/services/auth-service.ts
-```
-
-Responsabilidade atual:
-
-- login simulado;
-- cadastro simulado;
-- controle do usuario autenticado com `signal`;
-- estado derivado com `computed`;
-- persistencia no `localStorage`.
-
-Observacao:
-
-- nao chama backend;
-- a senha aceita no login simulado e `123456`;
-- qualquer email valido com essa senha entra como cliente, exceto `admin@email.com`, que entra como admin.
-
-### `CatalogoService`
-
-Arquivo:
-
-```text
-src/app/core/services/catalogo-service.ts
-```
-
-Responsabilidade atual:
-
-- listar flash tattoos simuladas;
-- listar tamanhos;
-- listar trabalhos do portfolio;
-- buscar trabalho de portfolio por id;
-- listar estilos do portfolio.
-
-Problema:
-
-- o metodo `listar()` existe, mas lanca `Method not implemented.`
-
-### `AgendamentoService`
-
-Arquivo:
-
-```text
-src/app/core/services/agendamento-service.ts
-```
-
-Responsabilidade atual:
-
-- `listarResumos()` retorna dados simulados de `catalogo.mock.ts`;
-- metodos CRUD usam `HttpClient` e apontam para `http://localhost:8080/agendamentos`.
-
-Observacao:
-
-- mistura uso simulado com preparacao para backend real.
-
-### Services HTTP preparados para backend
-
-Arquivos:
-
-```text
-src/app/core/services/usuario-service.ts
-src/app/core/services/cliente-service.ts
-src/app/core/services/tatuador-service.ts
-src/app/core/services/tatuagem-service.ts
-src/app/core/services/portifolio-service.ts
-src/app/core/services/pagamento-service.ts
-```
-
-Responsabilidade:
-
-- oferecer CRUD basico com `listar`, `buscarPorId`, `cadastrar`, `atualizar` e `excluir`;
-- apontar para endpoints em `http://localhost:8080`.
-
-Observacao importante:
-
-- esses services dependem de `HttpClient`;
-- `app.config.ts` ainda nao registra `provideHttpClient()`.
-
-### `AdminService`
-
-Arquivo:
-
-```text
-src/app/core/services/admin-service.ts
-```
-
-Estado atual:
-
-- service criado, mas vazio.
-
-## Models encontrados
-
-Arquivos em `src/app/models`:
-
-```text
-admin.ts
-agendamento.ts
-catalogo.ts
-cliente.ts
-pagamento.ts
-portifolio.ts
-tatuador.ts
-tatuagem.ts
-usuario.ts
-```
-
-### Models de dominio
-
-- `Usuario`
-  - Campos: `id`, `nome`, `email`, `senha`, `telefone`, `tipoUsuario`.
-
-- `Cliente`
-  - Estende `Usuario`.
-  - Campos extras: `endereco`, `dataNascimento`.
-
-- `Tatuador`
-  - Estende `Usuario`.
-  - Campos extras: `especialidade`, `biografia`, `anosExperiencia`, `fotoPerfil`, `instagram`, `disponivel`.
-
-- `Agendamento`
-  - Relaciona `Cliente` e `Tatuador`.
-  - Campos: `dataHora`, `descricao`, `status`, `valorEstimado`, `observacoes`.
-
-- `Tatuagem`
-  - Relaciona com `Agendamento`.
-  - Campos: `nome`, `descricao`, `estilo`, `localCorpo`, `tamanhoCm`, `imagemReferencia`, `dataRealizacao`.
-
-- `Portfolio`
-  - Relaciona com `Tatuador` e opcionalmente `Tatuagem`.
-  - Campos: `titulo`, `descricao`, `imagemUrl`, `estilo`, `dataPublicacao`, `destaque`.
-
-- `Pagamento`
-  - Relaciona com `Agendamento`.
-  - Campos: `valor`, `formaPagamento`, `status`, `dataPagamento`.
-
-- `Admin`
-  - Classe vazia.
-
-### Models de catalogo/tela
-
-Arquivo:
-
-```text
-src/app/models/catalogo.ts
-```
-
-Contem:
-
-- `ArtistaCatalogo`;
-- `TrabalhoPortfolio`;
-- `FlashTattoo`;
-- `AgendamentoResumo`;
-- `AvaliacaoArtista`;
-- `StatusAgendamento`.
-
-Observacao:
-
-- esses models sao usados para dados simulados e componentes de exibicao;
-- existe diferenca entre `Tatuador` e `ArtistaCatalogo`, o que hoje causa problemas em algumas telas.
-
-## Guards encontrados
-
-Arquivos:
-
-```text
-src/app/core/guards/admin-guard.ts
-src/app/core/guards/auth-guard-guard.ts
-src/app/core/guards/cliente-guard.ts
-src/app/core/guards/tatuador-guard.ts
-```
-
-### `adminGuard`
-
-- Permite acesso apenas se o usuario atual tiver perfil `admin`.
-- Usado na rota `/dashboard`.
-
-### `clienteGuard`
-
-- Permite acesso para perfil `cliente` ou `admin`.
-- Usado na rota `/perfil`.
-
-### `authGuardGuard`
-
-- Verifica se existe usuario autenticado.
-- Redireciona para `/login` com query param `redirect`.
-- Nao esta usado nas rotas atuais.
-
-### `tatuadorGuard`
-
-- Permite acesso apenas para perfil `tatuador`.
-- Nao esta usado nas rotas atuais.
-
-## Interceptor encontrado
-
-Arquivo:
-
-```text
-src/app/interceptors/auth-interceptor-interceptor.ts
-```
-
-Estado atual:
-
-- interceptor existe, mas apenas encaminha a requisicao sem alterar nada;
-- nao adiciona token;
-- nao esta registrado em `app.config.ts`.
-
-## Rotas encontradas
-
-Arquivo:
-
-```text
-src/app/app.routes.ts
-```
-
-Rotas fora do layout principal:
-
-| Rota | Componente | Observacao |
-|---|---|---|
-| `/login` | `LoginComponente` | Login simulado |
-| `/cadastro` | `CadastroComponente` | Cadastro simulado |
-
-Rotas dentro de `SiteLayoutComponent`:
-
-| Rota | Componente | Protecao |
-|---|---|---|
-| `/` | `HomeComponente` | Publica |
-| `/home` | redirect para `/` | Publica |
-| `/portfolio` | `PortfolioComponente` | Publica |
-| `/portfolio/:id` | `TattooDetailComponente` | Publica |
-| `/flash` | `FlashTattoosComponente` | Publica |
-| `/tatuadores` | `TatuadoresComponente` | Publica |
-| `/tatuadores/:id` | `TatuadorPerfilComponente` | Publica |
-| `/agendamento` | `AgendamentoComponente` | Publica |
-| `/contato` | `ContatoComponente` | Publica |
-| `/perfil` | `ClientePerfilComponente` | `clienteGuard` |
-| `/dashboard` | `DashboardComponente` | `adminGuard` |
-| `**` | `NotFoundComponente` | Publica |
-
-## Fluxo atual do login
-
-1. Usuario acessa `/login`.
-2. O formulario ja vem preenchido com:
-   - email: `admin@email.com`;
-   - senha: `123456`.
-3. O usuario envia o formulario.
-4. `LoginComponente` valida os campos usando Reactive Forms.
-5. Se o formulario for valido, chama `AuthService.login(email, senha)`.
-6. `AuthService` normaliza o email e verifica se a senha e `123456`.
-7. Se a senha estiver errada, retorna erro com a mensagem `Email ou senha invalidos.`
-8. Se o email for `admin@email.com`, cria usuario com perfil `admin`.
-9. Se o email for `cliente@email.com`, cria usuario com perfil `cliente`.
-10. Qualquer outro email com a senha correta tambem vira `cliente`.
-11. O usuario e salvo no `localStorage` com a chave `codeInk.usuario`.
-12. O usuario e redirecionado:
-    - admin: `/dashboard`;
-    - cliente: `/perfil`;
-    - se existir query param `redirect`, ele tem prioridade.
-
-## Funcionalidades reais no frontend
-
-Ja existem no frontend:
-
-- rotas configuradas;
-- layout principal com navbar e footer;
-- pagina inicial;
-- portfolio com busca e filtro por estilo;
-- detalhes de tattoo;
-- flash tattoos com filtro por tamanho;
-- tela de contato com validacao;
-- tela de login com validacao;
-- tela de cadastro com validacao de senha e confirmacao;
-- perfil do cliente protegido por guard;
-- dashboard administrativo protegido por guard;
-- logout;
-- cards reutilizaveis;
-- models TypeScript;
-- services preparados para chamadas HTTP;
-- dados mockados para portfolio, artistas, flash tattoos e agendamentos.
-
-## Funcionalidades simuladas
-
-Estao simuladas:
-
-- autenticacao;
-- cadastro de usuario;
-- favoritos;
-- dados pessoais do cliente;
-- agendamentos exibidos no perfil;
-- confirmacao de agendamento;
-- indicadores do dashboard;
-- portfolio;
-- flash tattoos;
-- artistas;
-- avaliacoes.
-
-## Funcionalidades preparadas, mas nao confirmadas como operacionais
-
-As seguintes partes parecem preparadas para integracao com backend, mas nao foram confirmadas como funcionais nesta analise:
-
-- CRUD de usuarios;
-- CRUD de clientes;
-- CRUD de tatuadores;
-- CRUD de tatuagens;
-- CRUD de portfolio;
-- CRUD de pagamentos;
-- CRUD de agendamentos;
-- interceptor de autenticacao;
-- service administrativo.
-
-Motivo:
-
-- dependem de backend em `localhost:8080`;
-- dependem de configuracao de `HttpClient`;
-- nao ha evidencia, nesta analise do frontend, de backend ativo no repositorio analisado.
-
-## Problemas encontrados
-
-### 1. `TatuadorPerfilComponente` nao compila
-
-Arquivo:
-
-```text
-src/app/pages/tatuador-perfil-componente/tatuador-perfil-componente.ts
-```
-
-Problemas confirmados pelo comando `ngc --noEmit`:
-
-```text
-Property '0' does not exist on type 'Observable<Tatuador[]>'.
-Property 'listarAvaliacoes' does not exist on type 'TatuadorService'.
-```
-
-Explicacao didatica:
-
-- `Observable<Tatuador[]>` representa uma lista que chegara de forma assincrona.
-- Nao e possivel acessar diretamente `[0]` como se fosse um array comum.
-- Alem disso, o service nao possui o metodo `listarAvaliacoes()`.
-
-### 2. Mistura entre `Tatuador` e `ArtistaCatalogo`
-
-Arquivos relacionados:
-
-```text
-src/app/models/tatuador.ts
-src/app/models/catalogo.ts
-src/app/core/services/tatuador-service.ts
-src/app/shared/artist-card-component/artist-card-component.ts
-src/app/pages/tatuadores-componente/tatuadores-componente.ts
-src/app/pages/tattoo-detail-componente/tattoo-detail-componente.ts
-src/app/pages/tatuador-perfil-componente/tatuador-perfil-componente.ts
-```
-
-O componente `ArtistCardComponent` espera `ArtistaCatalogo`, mas `TatuadorService` retorna `Tatuador`.
-
-`ArtistaCatalogo` possui campos como:
-
-- `fotoUrl`;
-- `avaliacao`;
-- `cidade`;
-- `trabalhos`;
-- `totalAvaliacoes`;
-- `tatuagensRealizadas`;
-- `clientesAtendidos`.
-
-`Tatuador` possui outro formato:
-
-- `fotoPerfil`;
-- `instagram`;
-- `disponivel`;
-- `tipoUsuario`;
-- e nao possui varios campos usados pelas telas.
-
-Isso indica que e preciso decidir se as telas publicas de artistas continuarao usando dados de catalogo mockados ou se o backend passara a devolver um DTO especifico para tela.
-
-### 3. Template de `TatuadoresComponente` usa signal sem chamada
-
-Arquivo:
-
-```text
-src/app/pages/tatuadores-componente/tatuadores-componente.html
-```
-
-Trecho observado:
-
-```html
-@for (artista of artistas; track artista.id)
-```
-
-Como `artistas` foi criado com `toSignal`, o esperado no template e chamar o signal:
-
-```html
-@for (artista of artistas(); track artista.id)
-```
-
-### 4. `HttpClient` nao esta registrado na aplicacao
-
-Arquivo:
-
-```text
-src/app/app.config.ts
-```
-
-O arquivo registra:
-
-```ts
-provideRouter(routes)
-```
-
-Mas nao registra:
-
-```ts
-provideHttpClient()
-```
-
-Impacto:
-
-- services que injetam `HttpClient` podem falhar em tempo de execucao com erro de provider ausente.
-
-### 5. Interceptor criado, mas nao usado
-
-Arquivo:
-
-```text
-src/app/interceptors/auth-interceptor-interceptor.ts
-```
-
-Problemas:
-
-- o interceptor nao altera a requisicao;
-- nao adiciona token;
-- nao esta registrado em `app.config.ts`;
-- o nome `authInterceptorInterceptor` esta repetitivo.
-
-### 6. Guards existentes, mas nem todos usados
-
-Arquivos:
-
-```text
-src/app/core/guards/auth-guard-guard.ts
-src/app/core/guards/tatuador-guard.ts
-```
-
-Estado:
-
-- existem no projeto;
-- nao estao aplicados nas rotas atuais.
-
-### 7. `CatalogoService.listar()` nao implementado
-
-Arquivo:
-
-```text
-src/app/core/services/catalogo-service.ts
-```
-
-O metodo:
-
-```ts
-listar() {
-  throw new Error('Method not implemented.');
-}
-```
-
-Impacto:
-
-- se alguma tela chamar esse metodo, a aplicacao quebrara em tempo de execucao.
-
-### 8. Inconsistencia entre `portifolio` e `portfolio`
-
-Arquivos relacionados:
-
-```text
-src/app/models/portifolio.ts
-src/app/core/services/portifolio-service.ts
-src/app/pages/portfolio-componente
-```
-
-Observacao:
-
-- nomes de arquivos e service usam `portifolio`;
-- nomes de rota, pagina e interface usam `portfolio`.
-
-Recomendacao:
-
-- nao fazer alteracao global automaticamente;
-- primeiro decidir padrao com o grupo e avaliar impactos em imports, rotas e backend.
-
-### 9. Dados simulados misturados com services de API
-
-Exemplos:
-
-- `CatalogoService` usa mock local.
-- `AgendamentoService` tem mock e tambem CRUD HTTP.
-- `TatuadorService` usa HTTP, mas telas parecem esperar dados mockados de catalogo.
-
-Impacto:
-
-- dificulta saber se uma tela deve funcionar sem backend;
-- aumenta risco de erro ao iniciar a aplicacao.
-
-## Resultado da verificacao de tipos
-
-Foi executada uma verificacao sem gerar arquivos:
-
-```bash
+```powershell
+npm.cmd run build
+npm.cmd test -- --watch=false
 .\node_modules\.bin\ngc.cmd -p tsconfig.app.json --noEmit
 ```
 
-Resultado:
+Resultados:
 
-- a verificacao falhou;
-- os erros confirmados estao em `TatuadorPerfilComponente`.
+- build de produção: aprovado;
+- compilação Angular sem emissão: aprovada;
+- testes: 5 arquivos e 14 testes aprovados;
+- Git antes das edições documentais: branch `main` sincronizada com `origin/main`, sem alterações locais;
+- remoto confirmado: `Fabrizio-bezerra99/ProjetoIntegradorGrupo.git`.
 
-Erros principais:
+Os comandos de build e teste precisaram ser executados fora do sandbox da auditoria porque o projeto está no OneDrive e o sandbox não conseguia resolver os arquivos de estilo. A mesma execução, com acesso normal ao diretório, foi concluída com sucesso.
 
-```text
-Property '0' does not exist on type 'Observable<Tatuador[]>'.
-Property 'listarAvaliacoes' does not exist on type 'TatuadorService'.
-```
+## Resumo executivo
 
-## Arquitetura atual do frontend
+O Code Ink é hoje um frontend Angular 21 standalone, compilável e visualmente estruturado. As páginas públicas usam dados mockados; autenticação e agendamentos são demonstrações persistidas no navegador. Há scaffolding de CRUD HTTP para uma API em `localhost:8080`, mas nenhum backend foi encontrado neste repositório e nenhuma página atual consome esses CRUDs.
 
-Fluxo simplificado:
+A documentação anterior tinha boa intenção didática, porém misturava três tempos diferentes:
 
-```text
-main.ts
-  -> app.config.ts
-    -> app.routes.ts
-      -> App
-        -> router-outlet
-          -> paginas publicas ou autenticadas
-```
+1. funcionalidades que existem atualmente;
+2. problemas registrados em 17/07/2026 que já foram corrigidos;
+3. backend, banco e mobile desejados, mas não confirmados no código.
 
-Para paginas publicas com layout:
+Também estavam vazios `docs/ARCHITECTURE.md` e `docs/ROADMAP.md`, e o README não explicava os principais limites da demonstração.
 
-```text
-SiteLayoutComponent
-  -> NavbarComponent
-  -> router-outlet das paginas
-  -> FooterComponent
-```
+## Inventário técnico
 
-Para dados:
+| Categoria                  | Quantidade | Observação                                            |
+| -------------------------- | ---------: | ----------------------------------------------------- |
+| aplicação Angular          |          1 | frontend standalone                                   |
+| páginas                    |         14 | incluindo 404 e gestão administrativa de agendamentos |
+| componentes compartilhados |          6 | layout, navbar, footer, header e dois cards           |
+| services                   |         10 | 3 usados pelas páginas, 6 CRUDs HTTP e 1 vazio        |
+| guards                     |          4 | 2 em uso e 2 sem rota                                 |
+| arquivos de model          |          9 | domínio, tela e uma classe vazia                      |
+| arquivo de mocks           |          1 | artistas, trabalhos, flash, avaliações e agendamentos |
+| testes automatizados       |          5 | componentes, regras locais de agendamento e controles de senha |
+| assets locais              |          2 | favicon e imagem principal do estúdio                 |
 
-```text
-Pages
-  -> Services
-    -> mocks locais ou HttpClient
-      -> backend futuro em localhost:8080
-```
+### Tecnologias declaradas
 
-Para autenticacao simulada:
+| Tecnologia        | Versão em `package.json` |
+| ----------------- | -----------------------: |
+| Angular           |                `^21.2.0` |
+| Angular CLI/build |                `^21.2.8` |
+| TypeScript        |                 `~5.9.2` |
+| RxJS              |                 `~7.8.0` |
+| Vitest            |                 `^4.0.8` |
+| jsdom             |                `^28.0.0` |
+| Prettier          |                 `^3.8.1` |
 
-```text
-LoginComponente
-  -> AuthService
-    -> signal usuarioAtual
-    -> localStorage
-    -> guards
-```
+O projeto declara npm `10.9.2` em `packageManager`, mas não declara versão mínima de Node.js.
 
-## Comparacao com o contexto do projeto
-
-O documento `PROJECT_CONTEXT.md` menciona objetivos como:
-
-- apresentacao do estudio;
-- portfolio;
-- cadastro e autenticacao;
-- clientes;
-- tatuadores;
-- agendamentos;
-- pagamentos;
-- administracao.
-
-Estado encontrado:
-
-| Objetivo | Estado atual |
-|---|---|
-| Apresentacao do estudio | Implementada no frontend |
-| Portfolio | Implementado com mock |
-| Flash tattoos | Implementado com mock |
-| Login | Simulado |
-| Cadastro | Simulado |
-| Cliente/perfil | Implementado visualmente com mock |
-| Tatuadores | Parcial, com problemas de model/service |
-| Agendamento | Fluxo visual simulado |
-| Pagamento | Apenas model e service HTTP preparado |
-| Administracao | Dashboard visual com mock |
-| Backend | Nao encontrado nesta raiz analisada |
-| Banco de dados | Nao encontrado nesta raiz analisada |
-| Mobile Flutter | Nao encontrado nesta raiz analisada |
-
-## Plano recomendado de desenvolvimento
-
-### Passo 1: recuperar compilacao
-
-Prioridade:
-
-1. corrigir `TatuadorPerfilComponente`;
-2. decidir fonte dos dados dos tatuadores;
-3. ajustar uso de signal em `TatuadoresComponente`;
-4. registrar `provideHttpClient()` se os services HTTP forem usados.
-
-### Passo 2: separar claramente mock e API
-
-Opcao recomendada para aprendizado:
-
-- manter mocks em `CatalogoService` para telas publicas enquanto o backend nao estiver pronto;
-- deixar services HTTP para entidades de backend;
-- documentar quais telas usam mock e quais usam API.
-
-### Passo 3: padronizar models de tela e models de backend
-
-Conceito importante:
-
-- model de dominio representa a regra principal do sistema;
-- model de tela ou DTO representa os dados no formato mais conveniente para exibicao.
-
-Para artistas, provavelmente sera necessario escolher entre:
-
-- adaptar a tela para usar `Tatuador`;
-- criar um DTO de artista para o frontend;
-- manter `ArtistaCatalogo` como mock ate o backend fornecer dados equivalentes.
-
-### Passo 4: integrar backend aos poucos
-
-Ordem sugerida:
-
-1. autenticacao real;
-2. listagem de tatuadores;
-3. portfolio;
-4. agendamentos;
-5. pagamentos;
-6. dashboard administrativo.
-
-### Passo 5: criar testes basicos
-
-Sugestoes:
-
-- teste do `AuthService`;
-- teste de guards;
-- teste de filtros do portfolio;
-- teste de validacao de cadastro;
-- teste de fluxo de agendamento.
-
-## Como testar manualmente o estado atual
-
-Depois de corrigir os erros de compilacao, os passos esperados seriam:
-
-```bash
-npm install
-npm start
-```
-
-Acessar:
+## Estrutura atual
 
 ```text
-http://localhost:4200
+ProjetoIntegrador/
+  .github/                 # instruções para Copilot
+  .vscode/                 # tarefas, launch e MCP do Angular CLI
+  docs/                    # contexto, arquitetura, auditoria, roadmap e learning log
+  prompts/                 # prompts reutilizáveis do fluxo de aprendizagem
+  public/                  # favicon e hero local
+  src/
+    app/
+      core/
+        data/              # mocks
+        guards/            # autorização de rotas
+        services/          # dados locais e scaffolding HTTP
+      interceptors/        # interceptor ainda inativo
+      models/              # domínio e formatos de tela
+      pages/               # páginas carregadas por rota
+      shared/              # componentes reutilizáveis
+    index.html
+    main.ts
+    styles.css
 ```
 
-Credenciais demonstrativas:
+## Estado funcional confirmado
 
-```text
-Admin: admin@email.com / 123456
-Cliente: cliente@email.com / 123456
-```
+### Implementado e operacional no frontend
 
-Fluxos para observar:
+- inicialização Angular standalone;
+- `HttpClient` e router registrados;
+- lazy loading das páginas;
+- layout público com navbar responsiva e footer;
+- home com conteúdo e trabalhos recentes;
+- portfólio com filtro por estilo, busca e estado vazio;
+- detalhe de trabalho com navegação anterior/próximo;
+- flash tattoos com filtro por tamanho e preço formatado;
+- lista e perfil de tatuadores;
+- login e cadastro simulados com validação;
+- sessão persistida em `localStorage`;
+- guards de cliente e administrador;
+- redirecionamento de volta à rota solicitada após o login;
+- agendamento em quatro etapas;
+- gravação local de novos agendamentos;
+- dashboard com resumo da lista de agendamentos;
+- página administrativa para confirmar ou cancelar agendamentos;
+- perfil do cliente com agendamentos filtrados pelo nome da sessão;
+- contato com validação e confirmação visual;
+- página 404;
+- media queries e estilos isolados por componente;
+- atributos semânticos e ARIA pontuais.
 
-- acessar `/`;
-- navegar para `/portfolio`;
-- filtrar portfolio;
-- abrir `/portfolio/1`;
-- acessar `/flash`;
-- acessar `/login`;
-- entrar como admin e verificar `/dashboard`;
-- sair;
-- entrar como cliente e verificar `/perfil`;
-- testar `/agendamento`;
-- testar `/contato`.
+### Implementado apenas como simulação local
 
-## Conceitos importantes para estudar neste projeto
+| Área                  | Comportamento real do código                          |
+| --------------------- | ----------------------------------------------------- |
+| autenticação          | valida uma senha fixa e cria um usuário local         |
+| cadastro              | cria sessão de cliente; não cria registro em servidor |
+| sessão                | persiste JSON em `codeInk.usuario`                    |
+| catálogo              | lê arrays de `catalogo.mock.ts`                       |
+| agendamento           | salva resumo em `codeInk.agendamentos`                |
+| atualização de status | sobrescreve localmente mocks ou registros criados     |
+| contato               | exibe sucesso e reseta o formulário                   |
+| favorito no detalhe   | dura somente enquanto o componente permanece ativo    |
+| favoritos no perfil   | mostra sempre os cinco primeiros trabalhos do mock    |
+| indicadores           | parte calculada e parte fixa no componente            |
 
-- Componentes standalone: componentes Angular que importam suas dependencias diretamente.
-- Rotas: mapeiam URLs para componentes.
-- Lazy loading: carrega uma tela apenas quando a rota e acessada.
-- Service: classe usada para centralizar regras e acesso a dados.
-- Dependency injection: forma como o Angular entrega services para componentes.
-- Reactive Forms: formularios controlados pelo TypeScript.
-- Observable: fluxo assincrono comum em chamadas HTTP.
-- Signal: estado reativo moderno do Angular.
-- Guard: funcao que decide se uma rota pode ser acessada.
-- Mock: dado simulado usado enquanto a API real nao esta pronta.
-- DTO: objeto de transferencia de dados, geralmente usado para adaptar dados entre backend e frontend.
+### Preparado, mas não integrado
 
-## Exercicio rapido
+- CRUD HTTP de usuários;
+- CRUD HTTP de clientes;
+- CRUD HTTP de tatuadores;
+- CRUD HTTP de tatuagens;
+- CRUD HTTP de portfólios;
+- CRUD HTTP de pagamentos;
+- CRUD HTTP de agendamentos;
+- interceptor de autenticação;
+- model e service administrativos.
 
-Abra os arquivos abaixo e responda:
+Esses itens não devem ser apresentados como API funcional. `provideHttpClient()` resolve a injeção de dependência no frontend, mas não comprova endpoints, servidor, banco, CORS ou autenticação.
 
-```text
-src/app/models/tatuador.ts
-src/app/models/catalogo.ts
-src/app/shared/artist-card-component/artist-card-component.ts
-```
+## Mapa de páginas
 
-Pergunta:
+| Página                        | Responsabilidade atual                          | Observação importante                            |
+| ----------------------------- | ----------------------------------------------- | ------------------------------------------------ |
+| `HomeComponente`              | apresentação, diferenciais e trabalhos recentes | textos institucionais são conteúdo demonstrativo |
+| `PortfolioComponente`         | busca e filtro locais                           | dados do mock                                    |
+| `TattooDetailComponente`      | detalhes e navegação entre trabalhos            | ID inválido cai no primeiro trabalho             |
+| `FlashTattoosComponente`      | filtro de flash por tamanho                     | dados e preços do mock                           |
+| `TatuadoresComponente`        | catálogo de artistas                            | dados do mock                                    |
+| `TatuadorPerfilComponente`    | perfil, trabalhos e avaliações                  | ID inválido cai no primeiro artista              |
+| `AgendamentoComponente`       | fluxo local em quatro etapas                    | rota pública, sem disponibilidade real           |
+| `ContatoComponente`           | formulário reativo                              | sem envio externo                                |
+| `LoginComponente`             | sessão simulada                                 | formulário inicia com credencial admin           |
+| `CadastroComponente`          | cadastro simulado                               | telefone e senha não chegam ao service           |
+| `ClientePerfilComponente`     | resumo local do cliente                         | vários dados e botões são estáticos              |
+| `DashboardComponente`         | visão administrativa                            | tatuagens e avaliações são indicadores fixos     |
+| `AgendamentosAdminComponente` | gestão local de status                          | sem API e sem histórico de alterações            |
+| `NotFoundComponente`          | erro 404                                        | usada somente pelo wildcard                      |
 
-Por que o `ArtistCardComponent` nao consegue receber diretamente um `Tatuador` sem ajustes?
+## Fluxos importantes
 
-Dica:
+### Login
 
-Compare os campos exigidos por `ArtistaCatalogo` com os campos existentes em `Tatuador`.
+1. O formulário valida email e senha.
+2. `AuthService.login()` aceita somente a senha `123456`.
+3. `admin@email.com` recebe perfil `admin`; qualquer outro email recebe `cliente`.
+4. O usuário é salvo em `codeInk.usuario`.
+5. A página navega para o parâmetro `redirect`, para `/dashboard` ou para `/perfil`.
+
+O checkbox “Lembrar de mim” não é consultado; a sessão sempre é persistida.
+
+### Cadastro
+
+1. Nome, email, telefone, senha e confirmação são validados no componente.
+2. Apenas nome e email são enviados a `AuthService.cadastrar()`.
+3. O service cria um cliente local e salva a sessão.
+4. A página redireciona para `/perfil`.
+
+Não há verificação de email duplicado, aceite de termos, persistência de telefone ou criação de conta em servidor.
+
+### Agendamento
+
+1. O usuário escolhe tipo de projeto, tatuador, data e horário.
+2. Ao confirmar, o componente chama `AgendamentoService.cadastrarResumo()`.
+3. O registro recebe um ID local e status `Pendente`.
+4. A lista é salva em `codeInk.agendamentos`.
+5. O resumo legado também é salvo em `codeInk.ultimoAgendamento`.
+6. Dashboard, perfil e gestão administrativa leem a lista combinada com os mocks.
+
+A implementação também migra um resumo da chave antiga se ainda não houver uma lista nova.
+
+### Gestão de status
+
+- pendente: pode ser confirmado ou cancelado;
+- confirmado: pode ser cancelado;
+- cancelado: não pode ser alterado pela interface;
+- finalizado: não pode ser alterado pela interface.
+
+## Inconsistências de documentação encontradas
+
+### Informações desatualizadas
+
+1. `docs/CODEBASE_ANALYSIS.md` afirmava que `TatuadorPerfilComponente` não compilava. O componente agora usa `CatalogoService` e compila.
+2. O mesmo documento afirmava que `TatuadoresComponente` tratava `artistas` como signal incorretamente. Hoje `artistas` é um array e o template está coerente.
+3. A análise antiga dizia que `provideHttpClient()` não estava configurado. Ele está registrado em `app.config.ts`.
+4. A análise antiga não incluía `/dashboard/agendamentos`, persistência da lista local ou gestão de status.
+5. `PROJECT_CONTEXT.md` citava o repositório `Fabrizio-bezerra99/PI-code-ink`; o remoto atual é `Fabrizio-bezerra99/ProjetoIntegradorGrupo.git`.
+6. Próximos passos antigos do Learning Log já tinham sido realizados em sessões posteriores. As entradas foram preservadas como histórico, não como roadmap atual.
+
+### Afirmações amplas ou incorretas
+
+1. O README não separava claramente “services preparados” de integração operacional com API.
+2. “Dados de agendamento são mocks” era incompleto: a aplicação combina mocks, `localStorage` novo e uma chave legada.
+3. “Melhorias de acessibilidade” não pode ser interpretado como conformidade WCAG. Não há teste AXE ou auditoria equivalente no repositório.
+4. Os textos de contato, endereço, redes sociais, higiene e experiência dos artistas são conteúdo da demonstração; o código não comprova dados de um estúdio real.
+5. A arquitetura de backend, banco e Flutter em `PROJECT_CONTEXT.md` era intenção futura, não estado do repositório.
+
+### Funcionalidades que não estavam documentadas
+
+- rota administrativa `/dashboard/agendamentos`;
+- regras de alteração de status;
+- `codeInk.agendamentos` e compatibilidade com `codeInk.ultimoAgendamento`;
+- exibição no perfil dos agendamentos associados ao nome do usuário;
+- fallback para o primeiro catálogo quando um ID não existe;
+- dependência de imagens externas do Unsplash;
+- comportamento sem efeito do checkbox “Lembrar de mim”;
+- aceitação de qualquer email válido com a senha de demonstração;
+- diferença entre favoritos temporários e a lista fixa do perfil;
+- indicadores parcialmente calculados e parcialmente fixos.
+
+### Documentos vazios
+
+- `docs/ARCHITECTURE.md`;
+- `docs/ROADMAP.md`.
+
+Ambos foram preenchidos nesta auditoria.
+
+## Problemas e lacunas confirmados no código
+
+Estes pontos foram documentados, mas não corrigidos por causa do escopo somente documental.
+
+### Alta prioridade
+
+1. **Autenticação é apenas uma demonstração.** Guards no navegador não são segurança; qualquer pessoa pode manipular o armazenamento local.
+2. **A interface mistura ações reais e aparentes.** Recuperar senha, editar informações, inspirações, configurações e gestão de três catálogos não possuem implementação.
+3. **Não há contrato de API.** Services assumem URLs, formatos e endpoints sem evidência de backend nesta raiz.
+4. **Cobertura de testes insuficiente.** O `AgendamentoService` possui testes automatizados, mas a maior parte dos fluxos centrais ainda não está coberta.
+5. **Dados institucionais não confirmados.** Telefone, email, endereço, redes sociais e afirmações do estúdio devem ser validados antes de publicação.
+
+### Média prioridade
+
+1. `CatalogoService.listar()` existe, não é usado e lança erro.
+2. `AdminService` e `Admin` estão vazios.
+3. `authGuardGuard`, `tatuadorGuard` e o interceptor não são usados.
+4. `PortifolioService` e `portifolio.ts` usam grafia diferente de `portfolio` nas páginas e no model `Portfolio`.
+5. O nome `authInterceptorInterceptor` é redundante.
+6. URLs de API estão duplicadas e fixas em `localhost:8080`.
+7. Componentes usam `CatalogoService`, enquanto os services de domínio HTTP permanecem isolados; ainda não há camada de mapeamento.
+8. IDs inválidos em detalhes não produzem 404, o que pode esconder links incorretos.
+9. Agendamento público pode ser salvo como cliente genérico e depois não aparece no perfil autenticado.
+10. Não há validação de disponibilidade, conflito de horário ou data por parte de um servidor.
+
+### Baixa prioridade
+
+1. CSS de login e cadastro repete grande parte das mesmas regras.
+2. Formatação e estilo de injeção de dependência variam entre services/componentes.
+3. Links sociais apontam para páginas genéricas de Instagram e YouTube.
+4. Não há licença, guia de contribuição ou política de versionamento documentados.
+5. O ano do footer é calculado no cliente; é correto para o uso atual, mas não possui teste.
+
+## Redundâncias
+
+### Documentação
+
+- `README.md`, `REFATORACAO.md` e a antiga análise repetiam a descrição da organização Angular. A nova organização mantém o README curto, a arquitetura detalhada e a refatoração como histórico.
+- `AGENTS.md` e `.github/copilot-instructions.md` repetem algumas boas práticas, mas atendem ferramentas diferentes; não são considerados duplicados removíveis automaticamente.
+- O Learning Log repete resultados de testes por sessão. Isso é aceitável como diário histórico; o estado atual deve ser consultado no README e nesta auditoria.
+
+### Código identificado, mas não alterado
+
+- estilos de autenticação duplicados em login e cadastro;
+- sete services com o mesmo padrão CRUD;
+- modelos de domínio separados dos models de catálogo sem mapeadores entre eles.
+
+## Arquivos candidatos a remoção ou revisão
+
+Nenhum arquivo foi removido. Os candidatos abaixo exigem confirmação do grupo.
+
+| Arquivo                                                | Evidência                                                                             | Recomendação                                                                                      |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `GitFacil.exe`                                         | binário de aproximadamente 8 MB, sem metadados de produto e sem referência no projeto | confirmar origem e necessidade; preferir ferramenta externa ou release, não binário versionado    |
+| `src/app/models/admin.ts`                              | classe vazia e sem import                                                             | remover quando confirmado que não faz parte de um contrato futuro                                 |
+| `src/app/core/services/admin-service.ts`               | service vazio e sem consumidor                                                        | remover ou implementar somente após requisito confirmado                                          |
+| `src/app/core/guards/auth-guard-guard.ts`              | guard sem rota                                                                        | decidir se substituirá guards específicos ou se deve ser removido                                 |
+| `src/app/core/guards/tatuador-guard.ts`                | guard sem rota e sem área de tatuador                                                 | manter apenas se a funcionalidade entrar no roadmap                                               |
+| `src/app/interceptors/auth-interceptor-interceptor.ts` | pass-through, não registrado                                                          | remover até existir estratégia de autenticação ou implementar depois do contrato                  |
+| `REFATORACAO.md`                                       | histórico útil, mas parcialmente sobreposto                                           | manter como registro histórico; futuramente mover para `docs/history/` se surgirem mais registros |
+
+Os services HTTP e models de domínio também não são usados pelas páginas, mas formam um scaffolding coerente de integração. Não devem ser excluídos sem confirmar o plano do backend.
+
+## Qualidade e acessibilidade
+
+Pontos positivos observados:
+
+- HTML semântico em várias páginas;
+- `scope` em cabeçalhos de tabela;
+- labels de formulário;
+- estados de foco globais;
+- `aria-label`, `aria-expanded`, `aria-pressed` e regiões nomeadas em pontos relevantes;
+- texto alternativo nas imagens;
+- `loading="lazy"` em várias imagens de catálogo;
+- layout adaptativo com breakpoints.
+
+Limites observados:
+
+- não há teste automatizado de acessibilidade;
+- mensagens de validação não são detalhadas por campo;
+- mudança de etapa, confirmação e abertura do menu não possuem gestão explícita de foco;
+- o botão de mostrar senha do cadastro não tem label ARIA equivalente ao do login;
+- indicadores baseados apenas em cor precisam de verificação visual e por leitor de tela;
+- responsividade foi inferida do CSS e do build, não validada em uma matriz real de navegadores/dispositivos nesta auditoria.
+
+## Testes existentes e ausentes
+
+### Existentes
+
+- `App` é criado e contém `router-outlet`;
+- `NavbarComponent` é criado;
+- `AgendamentoService` cobre listagem, cadastro, persistência, atualização de status, deduplicação, chave legada e JSON inválido.
+- `LoginComponente` cobre a alternância da senha e seus atributos acessíveis;
+- `CadastroComponente` cobre a alternância da senha e seus atributos acessíveis.
+
+### TODO de testes
+
+- `AuthService` e persistência da sessão;
+- guards e preservação do redirect;
+- validações de login, cadastro e contato;
+- busca e filtros;
+- rotas de detalhe com ID válido e inválido;
+- integração entre agendamento, perfil, dashboard e gestão;
+- acessibilidade básica;
+- comportamento responsivo crítico.
+
+## Avaliação para portfólio
+
+| Critério                    | Nota | Justificativa resumida                                                      |
+| --------------------------- | ---: | --------------------------------------------------------------------------- |
+| Organização                 | 7/10 | estrutura Angular clara; scaffolding e nomes ainda inconsistentes           |
+| Legibilidade                | 7/10 | componentes pequenos e tipados; há formatação desigual e placeholders       |
+| Boas práticas               | 6/10 | standalone, OnPush, signals e forms; segurança e integração ainda simuladas |
+| Documentação após auditoria | 8/10 | estado, arquitetura, limites e roadmap agora estão separados                |
+| Testes                      | 4/10 | 14 testes cobrem componentes, regras locais de agendamento e controles de senha; fluxos principais ainda não estão cobertos |
+| Valor para portfólio        | 6/10 | frontend apresentável e explicável; falta integração real e maior cobertura |
+
+Para uma entrevista júnior, a descrição correta é: “Construímos um frontend Angular standalone com catálogo mockado, autenticação e agendamento simulados no navegador, estrutura preparada para uma futura API e documentação explícita das limitações.” Não é correto afirmar que o sistema Full Stack está concluído.
+
+## Próximos passos documentais
+
+1. Confirmar o repositório e o estado real do backend.
+2. Documentar requisitos funcionais e regras de negócio aprovados pelo grupo.
+3. Definir contrato de API e exemplos de payload antes da integração.
+4. Registrar a versão mínima de Node.js suportada.
+5. Validar dados institucionais e direitos de uso das imagens.
+6. Criar uma matriz de testes e acessibilidade.
+7. Decidir, com o grupo, o destino dos arquivos candidatos a remoção.
+
+Os itens ainda não confirmados estão também marcados como TODO em `PROJECT_CONTEXT.md`, `ARCHITECTURE.md` e `ROADMAP.md`.
