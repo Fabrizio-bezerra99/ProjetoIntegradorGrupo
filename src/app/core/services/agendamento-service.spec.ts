@@ -66,6 +66,56 @@ describe('AgendamentoService', () => {
     ]);
   });
 
+  it('deve cadastrar um agendamento real pela API', () => {
+    let agendamentoCriado: AgendamentoResumo | undefined;
+
+    service
+      .cadastrarAgendamento({
+        cliente: 'Maria Souza',
+        artista: 'Lucas Oliveira',
+        data: '2026-08-30',
+        horario: '16:00',
+        status: 'Pendente',
+        projeto: 'Tattoo floral',
+      })
+      .subscribe((resultado) => {
+        agendamentoCriado = resultado;
+      });
+
+    const request = httpTesting.expectOne('http://localhost:8080/api/agendamentos');
+
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({
+      cliente: 'Maria Souza',
+      artista: 'Lucas Oliveira',
+      data: '30/08/2026',
+      horario: '16:00',
+      status: 'Pendente',
+      projeto: 'Tattoo floral',
+    });
+
+    request.flush({
+      id: 5,
+      cliente: 'Maria Souza',
+      artista: 'Lucas Oliveira',
+      data: '30/08/2026',
+      horario: '16:00',
+      status: 'Pendente',
+      projeto: 'Tattoo floral',
+    });
+
+    expect(agendamentoCriado).toEqual({
+      id: 5,
+      cliente: 'Maria Souza',
+      artista: 'Lucas Oliveira',
+      data: '30/08/2026',
+      horario: '16:00',
+      status: 'Pendente',
+      projeto: 'Tattoo floral',
+    });
+    expect(localStorage.getItem('codeInk.agendamentos')).toBeNull();
+  });
+
   it('deve listar os agendamentos mockados quando não existem dados salvos', () => {
     const agendamentos = service.listarResumosLocais();
 

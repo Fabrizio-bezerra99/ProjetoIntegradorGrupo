@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Agendamento } from '../../models/agendamento';
 import {
   AgendamentoResumo,
+  NovoAgendamentoPayload,
   StatusAgendamento,
   UltimoAgendamentoResumo,
 } from '../../models/catalogo';
@@ -98,6 +99,18 @@ export class AgendamentoService {
 
   listar(): Observable<AgendamentoResumo[]> {
     return this.http.get<AgendamentoResumo[]>(this.apiUrl);
+  }
+
+  cadastrarAgendamento(
+    payload: NovoAgendamentoPayload,
+  ): Observable<AgendamentoResumo> {
+    return this.http.post<AgendamentoResumo>(
+      this.apiUrl,
+      {
+        ...payload,
+        data: this.formatarData(payload.data),
+      },
+    );
   }
 
   buscarPorId(id: number): Observable<Agendamento> {
