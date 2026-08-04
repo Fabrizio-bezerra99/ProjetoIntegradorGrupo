@@ -14,7 +14,7 @@ import { AGENDAMENTOS } from '../data/catalogo.mock';
   providedIn: 'root',
 })
 export class AgendamentoService {
-  private readonly apiUrl = 'http://localhost:8080/agendamentos';
+  private readonly apiUrl = 'http://localhost:8080/api/agendamentos';
   private readonly storageKey = 'codeInk.agendamentos';
   private readonly legacyStorageKey = 'codeInk.ultimoAgendamento';
 
@@ -23,7 +23,11 @@ export class AgendamentoService {
 
   constructor(private readonly http: HttpClient) {}
 
-  listarResumos(): readonly AgendamentoResumo[] {
+  listarResumos(): Observable<AgendamentoResumo[]> {
+    return this.listar();
+  }
+
+  listarResumosLocais(): readonly AgendamentoResumo[] {
     const idsPersonalizados = new Set(
       this.agendamentosPersonalizados.map((item) => item.id),
     );
@@ -92,8 +96,8 @@ export class AgendamentoService {
     return true;
   }
 
-  listar(): Observable<Agendamento[]> {
-    return this.http.get<Agendamento[]>(this.apiUrl);
+  listar(): Observable<AgendamentoResumo[]> {
+    return this.http.get<AgendamentoResumo[]>(this.apiUrl);
   }
 
   buscarPorId(id: number): Observable<Agendamento> {

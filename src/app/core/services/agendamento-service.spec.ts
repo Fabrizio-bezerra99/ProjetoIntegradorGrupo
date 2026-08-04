@@ -1,4 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { AGENDAMENTOS } from '../data/catalogo.mock';
@@ -7,18 +8,21 @@ import { AgendamentoService } from './agendamento-service';
 
 describe('AgendamentoService', () => {
   let service: AgendamentoService;
+  let httpTesting: HttpTestingController;
 
   beforeEach(() => {
     localStorage.clear();
 
     TestBed.configureTestingModule({
-      providers: [provideHttpClient()],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(AgendamentoService);
+    httpTesting = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
+    httpTesting.verify();
     localStorage.clear();
   });
 
@@ -26,8 +30,44 @@ describe('AgendamentoService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('deve listar agendamentos reais pela API', () => {
+    let agendamentos: AgendamentoResumo[] | undefined;
+
+    service.listarResumos().subscribe((resultado) => {
+      agendamentos = resultado;
+    });
+
+    const request = httpTesting.expectOne('http://localhost:8080/api/agendamentos');
+
+    expect(request.request.method).toBe('GET');
+
+    request.flush([
+      {
+        id: 1,
+        cliente: 'Cliente Teste',
+        artista: 'Artista Teste',
+        data: '25/08/2026',
+        horario: '14:00',
+        status: 'Confirmado',
+        projeto: 'Projeto Teste',
+      },
+    ]);
+
+    expect(agendamentos).toEqual([
+      {
+        id: 1,
+        cliente: 'Cliente Teste',
+        artista: 'Artista Teste',
+        data: '25/08/2026',
+        horario: '14:00',
+        status: 'Confirmado',
+        projeto: 'Projeto Teste',
+      },
+    ]);
+  });
+
   it('deve listar os agendamentos mockados quando não existem dados salvos', () => {
-    const agendamentos = service.listarResumos();
+    const agendamentos = service.listarResumosLocais();
 
     expect(agendamentos).toHaveLength(AGENDAMENTOS.length);
     expect(agendamentos.map((item) => item.id)).toEqual(AGENDAMENTOS.map((item) => item.id));
@@ -77,7 +117,7 @@ describe('AgendamentoService', () => {
     const atualizou = service.atualizarStatusResumo(agendamento.id, 'Confirmado');
 
     const agendamentoAtualizado = service
-      .listarResumos()
+      .listarResumosLocais()
       .find((item) => item.id === agendamento.id);
 
     expect(atualizou).toBe(true);
@@ -93,7 +133,9 @@ describe('AgendamentoService', () => {
 
     const atualizou = service.atualizarStatusResumo(agendamentoMock.id, 'Confirmado');
 
-    const ocorrencias = service.listarResumos().filter((item) => item.id === agendamentoMock.id);
+    const ocorrencias = service
+      .listarResumosLocais()
+      .filter((item) => item.id === agendamentoMock.id);
 
     expect(atualizou).toBe(true);
     expect(ocorrencias).toHaveLength(1);
@@ -101,11 +143,11 @@ describe('AgendamentoService', () => {
   });
 
   it('deve retornar false sem alterar a lista quando o ID não existe', () => {
-    const listaAntes = service.listarResumos();
+    const listaAntes = service.listarResumosLocais();
 
     const atualizou = service.atualizarStatusResumo(999, 'Cancelado');
 
-    const listaDepois = service.listarResumos();
+    const listaDepois = service.listarResumosLocais();
 
     expect(atualizou).toBe(false);
     expect(listaDepois).toEqual(listaAntes);
@@ -147,7 +189,7 @@ describe('AgendamentoService', () => {
     });
 
     const serviceComDadoAntigo = TestBed.inject(AgendamentoService);
-    const [agendamentoMigrado] = serviceComDadoAntigo.listarResumos();
+    const [agendamentoMigrado] = serviceComDadoAntigo.listarResumosLocais();
 
     expect(agendamentoMigrado).toEqual({
       id: Math.max(...AGENDAMENTOS.map((item) => item.id)) + 1,
@@ -170,7 +212,7 @@ describe('AgendamentoService', () => {
     });
 
     const serviceComDadoInvalido = TestBed.inject(AgendamentoService);
-    const agendamentos = serviceComDadoInvalido.listarResumos();
+    const agendamentos = serviceComDadoInvalido.listarResumosLocais();
 
     expect(agendamentos).toHaveLength(AGENDAMENTOS.length);
     expect(agendamentos.map((item) => item.id)).toEqual(AGENDAMENTOS.map((item) => item.id));

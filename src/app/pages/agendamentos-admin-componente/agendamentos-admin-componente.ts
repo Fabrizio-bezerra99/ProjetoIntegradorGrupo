@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { AgendamentoService } from '../../core/services/agendamento-service';
-import type { StatusAgendamento } from '../../models/catalogo';
+import type { AgendamentoResumo, StatusAgendamento } from '../../models/catalogo';
 
 @Component({
   selector: 'app-agendamentos-admin-componente',
@@ -13,13 +13,25 @@ import type { StatusAgendamento } from '../../models/catalogo';
 export class AgendamentosAdminComponente {
   private readonly agendamentoService = inject(AgendamentoService);
 
-  protected agendamentos = this.agendamentoService.listarResumos();
+  private readonly agendamentosState = signal<readonly AgendamentoResumo[]>([]);
+  protected readonly agendamentos = this.agendamentosState.asReadonly();
+
+  constructor() {
+    this.agendamentoService.listarResumos().subscribe({
+      next: (agendamentos) => this.agendamentosState.set(agendamentos),
+      error: () => this.agendamentosState.set([]),
+    });
+  }
 
   protected atualizarStatus(id: number, status: StatusAgendamento): void {
     const atualizou = this.agendamentoService.atualizarStatusResumo(id, status);
 
     if (atualizou) {
-      this.agendamentos = this.agendamentoService.listarResumos();
+      this.agendamentosState.update((agendamentos) =>
+        agendamentos.map((agendamento) =>
+          agendamento.id === id ? { ...agendamento, status } : agendamento,
+        ),
+      );
     }
   }
 }

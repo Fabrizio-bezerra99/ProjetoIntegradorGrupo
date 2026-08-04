@@ -2,7 +2,7 @@
   <header class="admin-bookings__header">
     <p>Área administrativa</p>
     <h1>Gerenciar agendamentos</h1>
-    <span>{{ agendamentos.length }} agendamentos cadastrados</span>
+    <span>{{ agendamentos().length }} agendamentos cadastrados</span>
   </header>
 
   <div class="table-wrapper">
@@ -19,7 +19,7 @@
       </thead>
 
       <tbody>
-        @for (agendamento of agendamentos; track agendamento.id) {
+        @for (agendamento of agendamentos(); track agendamento.id) {
           <tr>
             <td>{{ agendamento.cliente }}</td>
             <td>{{ agendamento.artista }}</td>
