@@ -9,13 +9,14 @@ import {
   StatusAgendamento,
   UltimoAgendamentoResumo,
 } from '../../models/catalogo';
+import { environment } from '../../../environments/environment';
 import { AGENDAMENTOS } from '../data/catalogo.mock';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AgendamentoService {
-  private readonly apiUrl = 'http://localhost:8080/api/agendamentos';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/agendamentos`;
   private readonly storageKey = 'codeInk.agendamentos';
   private readonly legacyStorageKey = 'codeInk.ultimoAgendamento';
 
