@@ -4,7 +4,10 @@ import { HeaderComponent } from '../../shared/header-component/header-component'
 import { AgendamentoService } from '../../core/services/agendamento-service';
 import { AuthService } from '../../core/services/auth-service';
 import { CatalogoService } from '../../core/services/catalogo-service';
-import type { UltimoAgendamentoResumo } from '../../models/catalogo';
+import type {
+  NovoAgendamentoPayload,
+  UltimoAgendamentoResumo,
+} from '../../models/catalogo';
 
 type OpcaoAgendamento = 'portfolio' | 'referencia';
 
@@ -32,6 +35,7 @@ export class AgendamentoComponente {
   private readonly agendamentoService = inject(AgendamentoService);
   private readonly authService = inject(AuthService);
   private agendamentoSalvo = false;
+  private salvandoAgendamento = false;
 
   protected readonly artistas = this.catalogoService.listarArtistas();
 
@@ -40,6 +44,7 @@ export class AgendamentoComponente {
   protected readonly artistaId = signal<number | null>(null);
   protected readonly data = signal('');
   protected readonly horario = signal('');
+  protected readonly erroAgendamento = signal('');
   protected readonly dataMinima = new Date().toISOString().slice(0, 10);
   protected readonly artistaSelecionado = computed(() =>
     this.artistas.find((artista) => artista.id === this.artistaId()),
@@ -49,7 +54,7 @@ export class AgendamentoComponente {
 
     return {
       artista: artista?.nome ?? '',
-      data: this.data(),
+      data: this.formatarData(this.data()),
       horario: this.horario(),
       projeto: this.opcao() === 'portfolio' ? 'Inspiração do portfólio' : 'Referência própria',
     };
@@ -67,6 +72,7 @@ export class AgendamentoComponente {
 
     if (this.etapa() === 2 && !this.agendamentoSalvo) {
       this.salvarAgendamento();
+      return;
     }
 
     this.etapa.update((valor) => Math.min(3, valor + 1));
@@ -77,11 +83,32 @@ export class AgendamentoComponente {
   }
 
   private salvarAgendamento(): void {
-    this.agendamentoService.cadastrarResumo(
-      this.authService.usuarioAtual()?.nome ?? 'Cliente',
-      this.resumoAgendamento(),
-    );
-    this.agendamentoSalvo = true;
+    if (this.salvandoAgendamento) return;
+
+    const resumo = this.resumoAgendamento();
+    const payload: NovoAgendamentoPayload = {
+      cliente: this.authService.usuarioAtual()?.nome ?? 'Cliente',
+      artista: resumo.artista,
+      data: resumo.data,
+      horario: resumo.horario,
+      status: 'Pendente',
+      projeto: resumo.projeto,
+    };
+
+    this.salvandoAgendamento = true;
+    this.erroAgendamento.set('');
+
+    this.agendamentoService.cadastrarAgendamento(payload).subscribe({
+      next: () => {
+        this.agendamentoSalvo = true;
+        this.salvandoAgendamento = false;
+        this.etapa.set(3);
+      },
+      error: () => {
+        this.salvandoAgendamento = false;
+        this.erroAgendamento.set('Não foi possível enviar o agendamento. Tente novamente.');
+      },
+    });
   }
 
   protected novoAgendamento(): void {
@@ -91,9 +118,19 @@ export class AgendamentoComponente {
     this.data.set('');
     this.horario.set('');
     this.agendamentoSalvo = false;
+    this.salvandoAgendamento = false;
+    this.erroAgendamento.set('');
   }
 
   protected atualizarData(event: Event): void {
     this.data.set((event.target as HTMLInputElement).value);
+  }
+
+  private formatarData(data: string): string {
+    const resultado = /^(\d{4})-(\d{2})-(\d{2})$/.exec(data);
+
+    return resultado
+      ? `${resultado[3]}/${resultado[2]}/${resultado[1]}`
+      : data;
   }
 }

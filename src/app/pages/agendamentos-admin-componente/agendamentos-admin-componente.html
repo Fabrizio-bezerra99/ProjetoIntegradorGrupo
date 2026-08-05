@@ -2,8 +2,12 @@
   <header class="admin-bookings__header">
     <p>Área administrativa</p>
     <h1>Gerenciar agendamentos</h1>
-    <span>{{ agendamentos.length }} agendamentos cadastrados</span>
+    <span>{{ agendamentos().length }} agendamentos cadastrados</span>
   </header>
+
+  @if (mensagemErro()) {
+    <p role="alert">{{ mensagemErro() }}</p>
+  }
 
   <div class="table-wrapper">
     <table>
@@ -19,7 +23,7 @@
       </thead>
 
       <tbody>
-        @for (agendamento of agendamentos; track agendamento.id) {
+        @for (agendamento of agendamentos(); track agendamento.id) {
           <tr>
             <td>{{ agendamento.cliente }}</td>
             <td>{{ agendamento.artista }}</td>
@@ -42,7 +46,7 @@
                 <button
                   type="button"
                   class="action-button action-button--confirm"
-                  [disabled]="agendamento.status !== 'Pendente'"
+                  [disabled]="agendamento.status !== 'Pendente' || estaAtualizando(agendamento.id)"
                   (click)="atualizarStatus(agendamento.id, 'Confirmado')"
                 >
                   Confirmar
@@ -52,7 +56,9 @@
                   type="button"
                   class="action-button action-button--cancel"
                   [disabled]="
-                    agendamento.status === 'Cancelado' || agendamento.status === 'Finalizado'
+                    agendamento.status === 'Cancelado' ||
+                    agendamento.status === 'Finalizado' ||
+                    estaAtualizando(agendamento.id)
                   "
                   (click)="atualizarStatus(agendamento.id, 'Cancelado')"
                 >

@@ -45,6 +45,15 @@ export interface AgendamentoResumo {
   projeto?: string;
 }
 
+export interface NovoAgendamentoPayload {
+  cliente: string;
+  artista: string;
+  data: string;
+  horario: string;
+  status: StatusAgendamento;
+  projeto: string;
+}
+
 export interface UltimoAgendamentoResumo {
   artista: string;
   data: string;

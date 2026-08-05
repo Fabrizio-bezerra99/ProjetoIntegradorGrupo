@@ -28,7 +28,7 @@
     </header>
 
     <section class="dashboard-stats" aria-label="Indicadores">
-      @for (item of indicadores; track item.rotulo) {
+      @for (item of indicadores(); track item.rotulo) {
         <article class="card">
           <span>↗</span>
           <strong>{{ item.valor }}</strong>
@@ -57,7 +57,7 @@
           </thead>
 
           <tbody>
-            @for (item of agendamentos; track item.id) {
+            @for (item of agendamentos(); track item.id) {
               <tr>
                 <td>{{ item.cliente }}</td>
                 <td>{{ item.artista }}</td>

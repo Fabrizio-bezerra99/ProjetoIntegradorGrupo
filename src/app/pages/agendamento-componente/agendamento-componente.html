@@ -79,14 +79,16 @@
               </div>
             </fieldset>
           </div>
+          @if (erroAgendamento()) {
+            <p role="alert">{{ erroAgendamento() }}</p>
+          }
         }
         @case (3) {
           <div class="confirmation">
             <div class="confirmation__icon">✓</div>
             <h2>Solicitação enviada!</h2>
             <p>
-              Seu pedido foi salvo nesta demonstração e já está disponível na área administrativa
-              deste navegador.
+              Seu pedido foi enviado ao estúdio e já está disponível na área administrativa.
             </p>
 
             <dl>

@@ -8,7 +8,7 @@
       </div>
       <nav class="profile-nav card" aria-label="Área do cliente">
         <a routerLink="/agendamento"
-          >Agendamentos <span>{{ totalAgendamentos }}</span></a
+          >Agendamentos <span>{{ totalAgendamentos() }}</span></a
         ><button type="button">Favoritos</button><button type="button">Inspirações</button
         ><button type="button">Configurações</button
         ><button type="button" (click)="sair()">Sair</button>
@@ -17,7 +17,7 @@
     <main>
       <div class="stats-grid">
         <article class="card">
-          <strong>{{ totalAgendamentos }}</strong
+          <strong>{{ totalAgendamentos() }}</strong
           ><span>Agendamentos</span>
         </article>
         <article class="card"><strong>5</strong><span>Inspirações salvas</span></article>
@@ -53,7 +53,7 @@
           <a routerLink="/agendamento">Novo →</a>
         </header>
         <div class="appointment-list">
-          @for (item of agendamentos; track item.id) {
+          @for (item of agendamentos(); track item.id) {
             <article>
               <div>
                 <strong>{{ item.artista }}</strong

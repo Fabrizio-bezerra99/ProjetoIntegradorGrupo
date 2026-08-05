@@ -48,6 +48,14 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "course": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.course.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -60,6 +68,9 @@
             },
             "development": {
               "buildTarget": "codeInk:build:development"
+            },
+            "course": {
+              "buildTarget": "codeInk:build:course"
             }
           },
           "defaultConfiguration": "development"

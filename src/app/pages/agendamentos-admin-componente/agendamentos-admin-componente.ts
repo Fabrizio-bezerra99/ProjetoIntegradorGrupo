@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { AgendamentoService } from '../../core/services/agendamento-service';
-import type { StatusAgendamento } from '../../models/catalogo';
+import type { AgendamentoResumo, StatusAgendamento } from '../../models/catalogo';
 
 @Component({
   selector: 'app-agendamentos-admin-componente',
@@ -13,13 +13,56 @@ import type { StatusAgendamento } from '../../models/catalogo';
 export class AgendamentosAdminComponente {
   private readonly agendamentoService = inject(AgendamentoService);
 
-  protected agendamentos = this.agendamentoService.listarResumos();
+  private readonly agendamentosState = signal<readonly AgendamentoResumo[]>([]);
+  private readonly idsAtualizandoState = signal<readonly number[]>([]);
+  private readonly mensagemErroState = signal<string | null>(null);
+
+  protected readonly agendamentos = this.agendamentosState.asReadonly();
+  protected readonly idsAtualizando = this.idsAtualizandoState.asReadonly();
+  protected readonly mensagemErro = this.mensagemErroState.asReadonly();
+
+  constructor() {
+    this.agendamentoService.listarResumos().subscribe({
+      next: (agendamentos) => this.agendamentosState.set(agendamentos),
+      error: () => this.agendamentosState.set([]),
+    });
+  }
 
   protected atualizarStatus(id: number, status: StatusAgendamento): void {
-    const atualizou = this.agendamentoService.atualizarStatusResumo(id, status);
-
-    if (atualizou) {
-      this.agendamentos = this.agendamentoService.listarResumos();
+    if (this.idsAtualizandoState().includes(id)) {
+      return;
     }
+
+    this.mensagemErroState.set(null);
+    this.idsAtualizandoState.update((ids) => [...ids, id]);
+
+    this.agendamentoService.atualizarStatus(id, status).subscribe({
+      next: (agendamentoAtualizado) => {
+        this.agendamentosState.update((agendamentos) =>
+          agendamentos.map((agendamento) =>
+            agendamento.id === id
+              ? agendamentoAtualizado
+              : agendamento,
+          ),
+        );
+        this.finalizarAtualizacao(id);
+      },
+      error: () => {
+        this.mensagemErroState.set(
+          'Não foi possível atualizar o status do agendamento. Tente novamente.',
+        );
+        this.finalizarAtualizacao(id);
+      },
+    });
+  }
+
+  protected estaAtualizando(id: number): boolean {
+    return this.idsAtualizando().includes(id);
+  }
+
+  private finalizarAtualizacao(id: number): void {
+    this.idsAtualizandoState.update((ids) =>
+      ids.filter((itemId) => itemId !== id),
+    );
   }
 }
