@@ -114,6 +114,16 @@ export class AgendamentoService {
     );
   }
 
+  atualizarStatus(
+    id: number,
+    status: StatusAgendamento,
+  ): Observable<AgendamentoResumo> {
+    return this.http.patch<AgendamentoResumo>(
+      `${this.apiUrl}/${id}/status`,
+      { status },
+    );
+  }
+
   buscarPorId(id: number): Observable<Agendamento> {
     return this.http.get<Agendamento>(
       `${this.apiUrl}/${id}`,

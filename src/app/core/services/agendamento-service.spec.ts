@@ -4,7 +4,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { AGENDAMENTOS } from '../data/catalogo.mock';
 import type { AgendamentoResumo } from '../../models/catalogo';
+import { environment } from '../../../environments/environment';
 import { AgendamentoService } from './agendamento-service';
+
+const apiUrl = `${environment.apiBaseUrl}/api/agendamentos`;
 
 describe('AgendamentoService', () => {
   let service: AgendamentoService;
@@ -37,7 +40,7 @@ describe('AgendamentoService', () => {
       agendamentos = resultado;
     });
 
-    const request = httpTesting.expectOne('http://localhost:8080/api/agendamentos');
+    const request = httpTesting.expectOne(apiUrl);
 
     expect(request.request.method).toBe('GET');
 
@@ -82,7 +85,7 @@ describe('AgendamentoService', () => {
         agendamentoCriado = resultado;
       });
 
-    const request = httpTesting.expectOne('http://localhost:8080/api/agendamentos');
+    const request = httpTesting.expectOne(apiUrl);
 
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual({
@@ -114,6 +117,39 @@ describe('AgendamentoService', () => {
       projeto: 'Tattoo floral',
     });
     expect(localStorage.getItem('codeInk.agendamentos')).toBeNull();
+  });
+
+  it('deve atualizar o status do agendamento pela API', () => {
+    let agendamentoAtualizado: AgendamentoResumo | undefined;
+
+    service.atualizarStatus(1, 'Confirmado').subscribe((resultado) => {
+      agendamentoAtualizado = resultado;
+    });
+
+    const request = httpTesting.expectOne(`${apiUrl}/1/status`);
+
+    expect(request.request.method).toBe('PATCH');
+    expect(request.request.body).toEqual({ status: 'Confirmado' });
+
+    request.flush({
+      id: 1,
+      cliente: 'Maria Souza',
+      artista: 'Lucas Oliveira',
+      data: '30/08/2026',
+      horario: '16:00',
+      status: 'Confirmado',
+      projeto: 'Tattoo floral',
+    });
+
+    expect(agendamentoAtualizado).toEqual({
+      id: 1,
+      cliente: 'Maria Souza',
+      artista: 'Lucas Oliveira',
+      data: '30/08/2026',
+      horario: '16:00',
+      status: 'Confirmado',
+      projeto: 'Tattoo floral',
+    });
   });
 
   it('deve listar os agendamentos mockados quando não existem dados salvos', () => {
